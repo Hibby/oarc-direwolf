@@ -1,0 +1,5 @@
+direwolf (1.0-1) UNRELEASED; urgency=medium
+
+  * Initial release. (Closes: #759639)
+
+ -- Iain R. Learmonth <irl@fsfe.org>  Sat, 11 Oct 2014 18:28:52 +0100

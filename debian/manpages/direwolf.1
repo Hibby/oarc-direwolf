@@ -1,0 +1,102 @@
+
+.TH direwolf 1 "September 2014" "direwolf(1)" "Ham Radio Applications"
+
+.SH NAME
+\fBdirewolf\fR \- Soundcard TNC for APRS
+
+.SH SYNOPSIS
+
+\fBdirewolf\fR [\fBoptions\fR]
+
+.SH DESCRIPTION
+
+Dire Wolf is a software "soundcard" modem/TNC and APRS encoder/decoder. It can
+be used stand-alone to receive APRS messages, as a digipeater, APRStt gateway,
+or Internet Gateway (IGate). It can also be used as a virtual TNC for other
+applications such as APRSIS32, UI-View32, Xastir, APRS-TW, YAAC, UISS, Linux
+AX25, SARTrack, and many others.
+
+.SH OPTIONS
+
+.PP
+\fB\-c \fR\fB\fIfilename\fR\fR
+.RS 4
+Configuration file name.
+.RE
+.PP
+\fB\-r \fR\fB\fIn\fR\fR
+.RS 4
+Audio sample rate, per sec.
+.RE
+.PP
+\fB\-n \fR\fB\fIn\fR\fR
+.RS 4
+Number of audio channels, 1 or 2.
+.RE
+.PP
+\fB\-b \fR\fB\fIn\fR\fR
+.RS 4
+Bits per audio sample, 8 or 16.
+.RE
+.PP
+\fB\-B \fR\fB\fIn\fR\fR
+.RS 4
+Data rate in bits/sec.  Standard values are 300, 1200, 9600. If < 600, AFSK tones are set to 1600 & 1800. If > 2400, K9NG/G3RUH style encoding is used. Otherwise, AFSK tones are set to 1200 & 2200.
+.RE
+.PP
+\fB\-d \fR\fB\fIselector\fR\fR
+.RS 4
+Debug communication with client application, one of:
+.RS 2
+a = AGWPE network protocol.
+.br
+k = KISS serial port.
+.br
+n = KISS network.
+.br
+u = Display non-ASCII text in hexadecimal.
+.RE
+.RE
+.PP
+\fB\-t \fR\fB\fIn\fR\fR
+.RS 4
+Text colors. 1=normal, 0=disabled.
+.RE
+.PP
+\fB\-p \fR\fB\fIn\fR\fR
+.RS 4
+Enable pseudo terminal for KISS protocol.
+.RE
+.PP
+\fB\-x \fR\fB\fIn\fR\fR
+.RS 4
+Send Xmit level calibration tones.
+.RE
+.PP
+\fB\-U \fR\fB\fIn\fR\fR
+.RS 4
+Print UTF-8 test string and exit.
+.RE
+
+.SH "AUTHORS"
+
+Dire Wolf is Copyright \(co 2011-2014 John Langner WB2OSZ\&.
+
+.SH "COPYRIGHT"
+.br
+This manual page is Copyright \(co 2014 Iain R. Learmonth\&.
+.br
+.PP
+This manual page was written for the Debian system (but may be used by others)\&.
+.PP
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU General Public License, Version 2 or (at your option) any later version published by the Free Software Foundation\&.
+.PP
+On Debian systems, the complete text of the GNU General Public License can be found in
+/usr/share/common\-licenses/GPL-2\&.
+
+.SH "SEE ALSO"
+
+aclients(1), decode_aprs(1), ll2utm(1), text2tt(1), tt2text(1), utm2ll(1)
+
+.sp
+

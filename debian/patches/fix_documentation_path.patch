@@ -1,0 +1,15 @@
+Description: Correct all mentions of the documentation path in the source code
+Author: Iain R. Learmonth <irl@fsfe.org>
+Last-Update: 2014-09-08
+
+--- direwolf.orig/direwolf.c
++++ direwolf/direwolf.c
+@@ -875,7 +875,7 @@
+ 
+ #if __WIN32__
+ #else
+-	dw_printf ("Complete documentation can be found in /usr/local/share/doc/direwolf.\n");
++	dw_printf ("Complete documentation can be found in /usr/share/doc/direwolf.\n");
+ #endif
+ 	exit (EXIT_FAILURE);
+ }

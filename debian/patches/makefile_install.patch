@@ -1,0 +1,57 @@
+Description: Install things in the correct place and don't use sudo
+Author: Iain R. Learmonth <irl@fsfe.org>
+Last-Update: 2014-09-08
+
+--- direwolf.orig/Makefile.linux
++++ direwolf/Makefile.linux
+@@ -139,28 +139,28 @@
+ # For now, just put reference to it at the end so only last step fails.
+ 
+ install : direwolf decode_aprs tocalls.txt symbols-new.txt symbolsX.txt dw-icon.png direwolf.desktop
+-	sudo install direwolf /usr/local/bin
+-	sudo install decode_aprs /usr/local/bin
+-	sudo install text2tt /usr/local/bin
+-	sudo install tt2text /usr/local/bin
+-	sudo install ll2utm /usr/local/bin
+-	sudo install utm2ll /usr/local/bin
+-	sudo install aclients /usr/local/bin
+-	sudo install -D --mode=644 tocalls.txt /usr/share/direwolf/tocalls.txt
+-	sudo install -D --mode=644 symbols-new.txt /usr/share/direwolf/symbols-new.txt
+-	sudo install -D --mode=644 symbolsX.txt /usr/share/direwolf/symbolsX.txt
+-	sudo install -D --mode=644 dw-icon.png /usr/share/direwolf/dw-icon.png
+-	sudo install -D --mode=644 direwolf.desktop /usr/share/applications/direwolf.desktop
+-	cp direwolf.conf ~
+-	cp dw-start.sh ~
+-	sudo install -D --mode=644 CHANGES.txt /usr/local/share/doc/direwolf/CHANGES.txt
+-	sudo install -D --mode=644 LICENSE-dire-wolf.txt /usr/local/share/doc/direwolf/LICENSE-dire-wolf.txt
+-	sudo install -D --mode=644 LICENSE-other.txt /usr/local/share/doc/direwolf/LICENSE-other.txt
+-	sudo install -D --mode=644 User-Guide.pdf /usr/local/share/doc/direwolf/User-Guide.pdf
+-	sudo install -D --mode=644 Raspberry-Pi-APRS.pdf /usr/local/share/doc/direwolf/Raspberry-Pi-APRS.pdf
+-	sudo install -D --mode=644 APRStt-Implementation-Notes.pdf /usr/local/share/doc/direwolf/APRStt-Implementation-Notes.pdf
+-	sudo install -D --mode=644 Quick-Start-Guide-Windows.pdf /usr/local/share/doc/direwolf/Quick-Start-Guide-Windows.pdf
+-	ln -f -s /usr/share/applications/direwolf.desktop ~/Desktop/direwolf.desktop
++	mkdir -p debian/direwolf/usr/bin
++	install direwolf debian/direwolf/usr/bin
++	install decode_aprs debian/direwolf/usr/bin
++	install text2tt debian/direwolf/usr/bin
++	install tt2text debian/direwolf/usr/bin
++	install ll2utm debian/direwolf/usr/bin
++	install utm2ll debian/direwolf/usr/bin
++	install aclients debian/direwolf/usr/bin
++	install -D --mode=644 tocalls.txt debian/direwolf-docs/usr/share/direwolf/tocalls.txt
++	install -D --mode=644 symbols-new.txt debian/direwolf-docs/usr/share/direwolf/symbols-new.txt
++	install -D --mode=644 symbolsX.txt debian/direwolf-docs/usr/share/direwolf/symbolsX.txt
++	install -D --mode=644 dw-icon.png debian/direwolf/usr/share/direwolf/dw-icon.png
++	install -D --mode=644 direwolf.desktop debian/direwolf/usr/share/applications/direwolf.desktop
++	install -D --mode=644 direwolf.conf debian/direwolf-docs/usr/share/doc/direwolf/examples/direwolf.conf
++	install -D --mode=644 dw-start.sh debian/direwolf-docs/usr/share/doc/direwolf/examples/dw-start.sh
++	install -D --mode=644 CHANGES.txt debian/direwolf-docs/usr/share/doc/direwolf/CHANGES.txt
++	install -D --mode=644 LICENSE-dire-wolf.txt debian/direwolf-docs/usr/share/doc/direwolf/LICENSE-dire-wolf.txt
++	install -D --mode=644 LICENSE-other.txt debian/direwolf-docs/usr/share/doc/direwolf/LICENSE-other.txt
++	install -D --mode=644 User-Guide.pdf debian/direwolf-docs/usr/share/doc/direwolf/User-Guide.pdf
++	install -D --mode=644 Raspberry-Pi-APRS.pdf debian/direwolf-docs/usr/share/doc/direwolf/Raspberry-Pi-APRS.pdf
++	install -D --mode=644 APRStt-Implementation-Notes.pdf debian/direwolf-docs/usr/share/doc/direwolf/APRStt-Implementation-Notes.pdf
++	install -D --mode=644 Quick-Start-Guide-Windows.pdf debian/direwolf-docs/usr/share/doc/direwolf/Quick-Start-Guide-Windows.pdf
+ 
+ 
+ # Separate application to decode raw data.

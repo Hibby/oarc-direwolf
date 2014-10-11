@@ -1,0 +1,5 @@
+fix_desktop_file.patch
+makefile_install.patch
+fix_start_script_paths.patch
+fix_documentation_path.patch
+fix_hardening-no-relro.patch

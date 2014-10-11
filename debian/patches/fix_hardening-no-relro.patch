@@ -1,0 +1,135 @@
+Description: Do not override and ensure use of CFLAGS and LDFLAGS
+Author: Iain R. Learmonth <irl@fsfe.org>
+Last-Update: 2014-09-08
+
+--- direwolf.orig/Makefile.linux
++++ direwolf/Makefile.linux
+@@ -81,9 +81,9 @@
+ arch := $(shell echo | gcc -E -dM - | grep __i386__)
+ 
+ ifneq ($(arch),)
+-CFLAGS := -DUSE_ALSA -O3 -march=pentium3 -pthread
++CFLAGS += -DUSE_ALSA -O3 -march=pentium3 -pthread ${CPPFLAGS}
+ else
+-CFLAGS := -DUSE_ALSA -O3 -pthread
++CFLAGS += -DUSE_ALSA -O3 -pthread ${CPPFLAGS}
+ endif
+ 
+ 
+@@ -109,7 +109,7 @@
+ 		ptt.o beacon.o dwgps.o encode_aprs.o latlong.o encode_aprs.o latlong.o textcolor.o \
+ 		dtmf.o aprs_tt.o tt_user.o tt_text.o igate.o \
+ 		utm.a
+-	$(CC) $(CFLAGS) -o $@ $^ -lpthread -lrt -lasound $(LDLIBS) -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lpthread -lrt -lasound $(LDLIBS) -lm
+ 
+ 
+ # Optimization for slow processors.
+@@ -120,7 +120,7 @@
+ 
+ 
+ fsk_fast_filter.h : demod_afsk.c
+-	$(CC) $(CFLAGS) -o gen_fff -DGEN_FFF demod_afsk.c dsp.c textcolor.c -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o gen_fff -DGEN_FFF demod_afsk.c dsp.c textcolor.c -lm
+ 	./gen_fff > fsk_fast_filter.h
+ 
+ 
+@@ -129,7 +129,7 @@
+ 	ar -cr $@ $^
+ 
+ LatLong-UTMconversion.o : utm/LatLong-UTMconversion.c
+-	$(CC) $(CFLAGS) -c -o $@ $^
++	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
+ 
+ 
+ # Optional install step. 
+@@ -166,40 +166,40 @@
+ # Separate application to decode raw data.
+ 
+ decode_aprs : decode_aprs.c symbols.c ax25_pad.c textcolor.c fcs_calc.c
+-	$(CC) $(CFLAGS) -o decode_aprs -DTEST $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o decode_aprs -DTEST $^ -lm
+ 
+ 
+ 
+ # Convert between text and touch tone representation.
+ 
+ text2tt : tt_text.c
+-	$(CC) $(CFLAGS) -DENC_MAIN -o text2tt tt_text.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -DENC_MAIN -o text2tt tt_text.c
+ 
+ tt2text : tt_text.c
+-	$(CC) $(CFLAGS) -DDEC_MAIN -o tt2text tt_text.c
++	$(CC) $(CFLAGS) $(LDFLAGS) -DDEC_MAIN -o tt2text tt_text.c
+ 
+ 
+ # Convert between Latitude/Longitude and UTM coordinates.
+ 
+ ll2utm : ll2utm.c utm.a
+-	$(CC) $(CFLAGS) -I utm -o $@ $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -I utm -o $@ $^ -lm
+ 
+ utm2ll : utm2ll.c utm.a
+-	$(CC) $(CFLAGS) -I utm -o $@ $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -I utm -o $@ $^ -lm
+ 
+ 
+ 
+ # Test application to generate sound.
+ 
+ gen_packets : gen_packets.c ax25_pad.c hdlc_send.c fcs_calc.c gen_tone.c textcolor.c 
+-	$(CC) $(CFLAGS) -o $@ $^ -lasound -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lasound -lm
+ 
+ demod.o : tune.h
+ demod_afsk.o : tune.h
+ demod_9600.o : tune.h
+ 
+ testagc : atest.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.o multi_modem.o rrbb.o fcs_calc.c ax25_pad.c decode_aprs.c symbols.c tune.h textcolor.c
+-	$(CC) $(CFLAGS) -o atest $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o atest $^ -lm
+ 	./atest 02_Track_2.wav | grep "packets decoded in" > atest.out
+ 
+ 
+@@ -207,14 +207,14 @@
+ 
+ 
+ atest : atest.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.o multi_modem.o rrbb.o fcs_calc.c ax25_pad.c decode_aprs.c symbols.c textcolor.c
+-	$(CC) $(CFLAGS) -o $@ $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm
+ 	time ./atest ../direwolf-0.2/02_Track_2.wav 
+ 
+ # Unit test for inner digipeater algorithm
+ 
+ 
+ dtest : digipeater.c ax25_pad.c dedupe.c fcs_calc.c tq.c textcolor.c
+-	$(CC) $(CFLAGS) -DTEST -o $@ $^
++	$(CC) $(CFLAGS) $(LDFLAGS) -DTEST -o $@ $^
+ 	./dtest
+ 
+ 
+@@ -222,21 +222,21 @@
+ 
+ 
+ itest : igate.c textcolor.c ax25_pad.c fcs_calc.c 
+-	$(CC) $(CFLAGS) -DITEST -o $@ $^
++	$(CC) $(CFLAGS) $(LDFLAGS) -DITEST -o $@ $^
+ 	./itest
+ 
+ 
+ # Unit test for UDP reception with AFSK demodulator
+ 
+ udptest : udp_test.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.c multi_modem.c rrbb.c fcs_calc.c ax25_pad.c decode_aprs.c symbols.c textcolor.c
+-	$(CC) $(CFLAGS) -o $@ $^ -lm -lrt
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm -lrt
+ 	./udptest
+ 
+ 
+ # Multiple AGWPE network or serial port clients to test TNCs side by side.
+ 
+ aclients : aclients.c ax25_pad.c fcs_calc.c textcolor.c
+-	$(CC) $(CFLAGS) -g -o $@ $^ 
++	$(CC) $(CFLAGS) $(LDFLAGS) -g -o $@ $^ 
+ 
+ 
+ SRCS = direwolf.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c multi_modem.c fcs_calc.c ax25_pad.c decode_aprs.c symbols.c \

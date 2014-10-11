@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	make -f Makefile.linux
+
+override_dh_auto_install:
+	make -f Makefile.linux install
+
+override_dh_auto_clean:
+	make -f Makefile.linux clean
+	-rm aclients gen_fff
+
