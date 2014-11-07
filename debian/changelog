@@ -1,3 +1,10 @@
+direwolf (1.0-2) unstable; urgency=medium
+
+  * No longer install the ll2utm or utm2ll binaries or man pages. (Closes:
+    #768223)
+
+ -- Iain R. Learmonth <irl@fsfe.org>  Fri, 07 Nov 2014 13:40:27 +0000
+
 direwolf (1.0-1) unstable; urgency=medium
 
   * Initial release. (Closes: #759639)

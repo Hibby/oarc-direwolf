@@ -35,8 +35,8 @@ Last-Update: 2014-09-08
 +	install decode_aprs debian/direwolf/usr/bin
 +	install text2tt debian/direwolf/usr/bin
 +	install tt2text debian/direwolf/usr/bin
-+	install ll2utm debian/direwolf/usr/bin
-+	install utm2ll debian/direwolf/usr/bin
++	#install ll2utm debian/direwolf/usr/bin
++	#install utm2ll debian/direwolf/usr/bin
 +	install aclients debian/direwolf/usr/bin
 +	install -D --mode=644 tocalls.txt debian/direwolf-docs/usr/share/direwolf/tocalls.txt
 +	install -D --mode=644 symbols-new.txt debian/direwolf-docs/usr/share/direwolf/symbols-new.txt
