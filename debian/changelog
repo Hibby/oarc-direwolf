@@ -1,3 +1,10 @@
+direwolf (1.0-3) unstable; urgency=medium
+
+  * Changes architecture for direwolf from linux-any to a whitelist of
+    little-endian architectures. (Closes: #774389)
+
+ -- Iain R. Learmonth <irl@fsfe.org>  Tue, 20 Jan 2015 05:32:05 +0000
+
 direwolf (1.0-2) unstable; urgency=medium
 
   * No longer install the ll2utm or utm2ll binaries or man pages. (Closes:
