@@ -4,28 +4,39 @@ Last-Update: 2014-09-08
 
 --- direwolf.orig/Makefile.linux
 +++ direwolf/Makefile.linux
-@@ -81,9 +81,9 @@
- arch := $(shell echo | gcc -E -dM - | grep __i386__)
- 
- ifneq ($(arch),)
--CFLAGS := -DUSE_ALSA -O3 -march=pentium3 -pthread
-+CFLAGS += -DUSE_ALSA -O3 -march=pentium3 -pthread ${CPPFLAGS}
+@@ -84,9 +84,9 @@
+ # You might see improvement with -march fine tuned to your hardware.
+ # Probably should keep pentium3 if you will be redistributing binaries
+ # to other people.
+-CFLAGS := -O3 -march=pentium3 -pthread -Iutm
++CFLAGS := -O3 -march=pentium3 -pthread -Iutm $(CPPFLAGS)
  else
--CFLAGS := -DUSE_ALSA -O3 -pthread
-+CFLAGS += -DUSE_ALSA -O3 -pthread ${CPPFLAGS}
+-CFLAGS := -O3 -pthread -Iutm
++CFLAGS := -O3 -pthread -Iutm $(CPPFLAGS)
  endif
  
  
-@@ -109,7 +109,7 @@
+@@ -100,8 +100,8 @@
+ 
+ # Uncomment following lines to enable GPS interface & tracker function.
+ 
+-#CFLAGS += -DENABLE_GPS
+-#LDLIBS += -lgps
++CFLAGS += -DENABLE_GPS
++LDLIBS += -lgps
+ 
+ 
+ 
+@@ -121,7 +121,7 @@
  		ptt.o beacon.o dwgps.o encode_aprs.o latlong.o encode_aprs.o latlong.o textcolor.o \
- 		dtmf.o aprs_tt.o tt_user.o tt_text.o igate.o \
+ 		dtmf.o aprs_tt.o tt_user.o tt_text.o igate.o nmea.o log.o telemetry.o \
  		utm.a
--	$(CC) $(CFLAGS) -o $@ $^ -lpthread -lrt -lasound $(LDLIBS) -lm
-+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lpthread -lrt -lasound $(LDLIBS) -lm
+-	$(CC) $(CFLAGS) -o $@ $^ -lpthread -lrt $(LDLIBS) -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lpthread -lrt $(LDLIBS) -lm
  
  
  # Optimization for slow processors.
-@@ -120,7 +120,7 @@
+@@ -132,7 +132,7 @@
  
  
  fsk_fast_filter.h : demod_afsk.c
@@ -34,7 +45,7 @@ Last-Update: 2014-09-08
  	./gen_fff > fsk_fast_filter.h
  
  
-@@ -129,7 +129,7 @@
+@@ -141,7 +141,7 @@
  	ar -cr $@ $^
  
  LatLong-UTMconversion.o : utm/LatLong-UTMconversion.c
@@ -42,11 +53,11 @@ Last-Update: 2014-09-08
 +	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $^
  
  
- # Optional install step. 
-@@ -166,40 +166,40 @@
+ # Optional installation into /usr/...
+@@ -193,38 +193,38 @@
  # Separate application to decode raw data.
  
- decode_aprs : decode_aprs.c symbols.c ax25_pad.c textcolor.c fcs_calc.c
+ decode_aprs : decode_aprs.c symbols.c ax25_pad.c textcolor.c fcs_calc.c latlong.c log.c telemetry.o
 -	$(CC) $(CFLAGS) -o decode_aprs -DTEST $^ -lm
 +	$(CC) $(CFLAGS) $(LDFLAGS) -o decode_aprs -DTEST $^ -lm
  
@@ -66,37 +77,44 @@ Last-Update: 2014-09-08
  # Convert between Latitude/Longitude and UTM coordinates.
  
  ll2utm : ll2utm.c utm.a
--	$(CC) $(CFLAGS) -I utm -o $@ $^ -lm
-+	$(CC) $(CFLAGS) $(LDFLAGS) -I utm -o $@ $^ -lm
+-	$(CC) $(CFLAGS) -o $@ $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm
  
  utm2ll : utm2ll.c utm.a
--	$(CC) $(CFLAGS) -I utm -o $@ $^ -lm
-+	$(CC) $(CFLAGS) $(LDFLAGS) -I utm -o $@ $^ -lm
+-	$(CC) $(CFLAGS) -o $@ $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm
  
+ 
+ # Convert from log file to GPX.
+ 
+ log2gpx : log2gpx.c 
+-	$(CC) $(CFLAGS) -o $@ $^ -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm
  
  
  # Test application to generate sound.
  
  gen_packets : gen_packets.c ax25_pad.c hdlc_send.c fcs_calc.c gen_tone.c textcolor.c 
--	$(CC) $(CFLAGS) -o $@ $^ -lasound -lm
-+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lasound -lm
+-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS) -lm
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS) -lm
  
  demod.o : tune.h
  demod_afsk.o : tune.h
- demod_9600.o : tune.h
+@@ -232,7 +232,7 @@
  
- testagc : atest.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.o multi_modem.o rrbb.o fcs_calc.c ax25_pad.c decode_aprs.c symbols.c tune.h textcolor.c
+ testagc : atest.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.o multi_modem.o rrbb.o \
+ 		fcs_calc.c ax25_pad.c decode_aprs.c telemetry.c latlong.c symbols.c tune.h textcolor.c
 -	$(CC) $(CFLAGS) -o atest $^ -lm
 +	$(CC) $(CFLAGS) $(LDFLAGS) -o atest $^ -lm
  	./atest 02_Track_2.wav | grep "packets decoded in" > atest.out
  
  
-@@ -207,14 +207,14 @@
+@@ -241,14 +241,14 @@
  
- 
- atest : atest.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.o multi_modem.o rrbb.o fcs_calc.c ax25_pad.c decode_aprs.c symbols.c textcolor.c
--	$(CC) $(CFLAGS) -o $@ $^ -lm
-+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm
+ atest : atest.c demod.c dsp.c demod_afsk.c demod_9600.c hdlc_rec.c hdlc_rec2.o multi_modem.o rrbb.o \
+ 		fcs_calc.c ax25_pad.c decode_aprs.c telemetry.c latlong.c symbols.c textcolor.c
+-	$(CC) $(CFLAGS) -o $@ $^ -lm -lrt
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm -lrt
  	time ./atest ../direwolf-0.2/02_Track_2.wav 
  
  # Unit test for inner digipeater algorithm
@@ -108,7 +126,7 @@ Last-Update: 2014-09-08
  	./dtest
  
  
-@@ -222,21 +222,21 @@
+@@ -256,14 +256,14 @@
  
  
  itest : igate.c textcolor.c ax25_pad.c fcs_calc.c 
@@ -124,6 +142,15 @@ Last-Update: 2014-09-08
 +	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm -lrt
  	./udptest
  
+ 
+@@ -271,14 +271,14 @@
+ 
+ 
+ etest : telemetry.c ax25_pad.c fcs_calc.c textcolor.c misc.a regex.a
+-	$(CC) $(CFLAGS) -o $@ $^ -lm -lrt
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lm -lrt
+ 	./etest
+ 	
  
  # Multiple AGWPE network or serial port clients to test TNCs side by side.
  

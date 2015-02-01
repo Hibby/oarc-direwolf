@@ -1,3 +1,9 @@
+direwolf (1.1-1) UNRELEASED; urgency=medium
+
+  * Update to new upstream version 1.1.
+
+ -- Iain R. Learmonth <irl@fsfe.org>  Sun, 01 Feb 2015 22:37:47 +0000
+
 direwolf (1.0-3) unstable; urgency=medium
 
   * Changes architecture for direwolf from linux-any to a whitelist of
