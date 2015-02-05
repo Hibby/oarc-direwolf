@@ -1,3 +1,7 @@
+Description: Enable GPS by enabling flags in Makefile
+Author: Iain R. Learmonth <irl@fsfe.org>                                         
+Last-Update: 2015-02-05
+
 --- direwolf.orig/Makefile.linux
 +++ direwolf/Makefile.linux
 @@ -100,8 +100,8 @@

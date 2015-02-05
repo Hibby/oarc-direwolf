@@ -1,3 +1,7 @@
+Description: Fix a few spelling mistakes
+Author: Iain R. Learmonth <irl@fsfe.org>                                         
+Last-Update: 2015-02-05
+
 --- direwolf.orig/config.c
 +++ direwolf/config.c
 @@ -2649,7 +2649,7 @@
