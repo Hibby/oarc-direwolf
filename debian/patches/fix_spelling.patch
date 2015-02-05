@@ -1,0 +1,22 @@
+--- direwolf.orig/config.c
++++ direwolf/config.c
+@@ -2649,7 +2649,7 @@
+ 	  }
+ 	  else {
+ 	    text_color_set(DW_COLOR_ERROR);
+-	    dw_printf ("Config file, line %d: When any of ZONE, EASTING, NORTHING specifed, they must all be specified.\n", line);
++	    dw_printf ("Config file, line %d: When any of ZONE, EASTING, NORTHING specified, they must all be specified.\n", line);
+ 	  }
+ 	}
+ 
+--- direwolf.orig/decode_aprs.c
++++ direwolf/decode_aprs.c
+@@ -1581,7 +1581,7 @@
+  *
+  * Outputs:	??? TBD
+  *
+- * Description:	An APRS message is a text string with a specifed addressee.
++ * Description:	An APRS message is a text string with a specified addressee.
+  *
+  *		It's a lot more complicated with different types of addressees
+  *		and replies with acknowledgement or rejection.
