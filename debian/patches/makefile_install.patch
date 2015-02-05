@@ -56,11 +56,11 @@ Last-Update: 2014-09-08
 +	install -D --mode=644 CHANGES.txt debian/direwolf/usr/share/doc/direwolf/CHANGES.txt
 +	install -D --mode=644 LICENSE-dire-wolf.txt debian/direwolf/usr/share/doc/direwolf/LICENSE-dire-wolf.txt
 +	install -D --mode=644 LICENSE-other.txt debian/direwolf/usr/share/doc/direwolf/LICENSE-other.txt
-+	install -D --mode=644 User-Guide.pdf debian/direwolf/usr/share/doc/direwolf/User-Guide.pdf
-+	install -D --mode=644 Raspberry-Pi-APRS.pdf debian/direwolf/usr/share/doc/direwolf/Raspberry-Pi-APRS.pdf
-+	install -D --mode=644 Raspberry-Pi-APRS-Tracker.pdf debian/direwolf/usr/share/doc/direwolf/Raspberry-Pi-APRS-Tracker.pdf
-+	install -D --mode=644 APRStt-Implementation-Notes.pdf debian/direwolf/usr/share/doc/direwolf/APRStt-Implementation-Notes.pdf
-+	install -D --mode=644 Quick-Start-Guide-Windows.pdf debian/direwolf/usr/share/doc/direwolf/Quick-Start-Guide-Windows.pdf
++	install -D --mode=644 User-Guide.pdf debian/direwolf-docs/usr/share/doc/direwolf/User-Guide.pdf
++	install -D --mode=644 Raspberry-Pi-APRS.pdf debian/direwolf-docs/usr/share/doc/direwolf/Raspberry-Pi-APRS.pdf
++	install -D --mode=644 Raspberry-Pi-APRS-Tracker.pdf debian/direwolf-docs/usr/share/doc/direwolf/Raspberry-Pi-APRS-Tracker.pdf
++	install -D --mode=644 APRStt-Implementation-Notes.pdf debian/direwolf-docs/usr/share/doc/direwolf/APRStt-Implementation-Notes.pdf
++	install -D --mode=644 Quick-Start-Guide-Windows.pdf debian/direwolf-docs/usr/share/doc/direwolf/Quick-Start-Guide-Windows.pdf
  
  
  # The Raspberry Pi has ~/Desktop but Ubuntu does not.
