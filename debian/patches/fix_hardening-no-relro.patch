@@ -16,17 +16,6 @@ Last-Update: 2014-09-08
  endif
  
  
-@@ -100,8 +100,8 @@
- 
- # Uncomment following lines to enable GPS interface & tracker function.
- 
--#CFLAGS += -DENABLE_GPS
--#LDLIBS += -lgps
-+CFLAGS += -DENABLE_GPS
-+LDLIBS += -lgps
- 
- 
- 
 @@ -121,7 +121,7 @@
  		ptt.o beacon.o dwgps.o encode_aprs.o latlong.o encode_aprs.o latlong.o textcolor.o \
  		dtmf.o aprs_tt.o tt_user.o tt_text.o igate.o nmea.o log.o telemetry.o \

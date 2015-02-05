@@ -1,0 +1,13 @@
+--- direwolf.orig/Makefile.linux
++++ direwolf/Makefile.linux
+@@ -100,8 +100,8 @@
+ 
+ # Uncomment following lines to enable GPS interface & tracker function.
+ 
+-#CFLAGS += -DENABLE_GPS
+-#LDLIBS += -lgps
++CFLAGS += -DENABLE_GPS
++LDLIBS += -lgps
+ 
+ 
+ 
