@@ -1,3 +1,9 @@
+direwolf (1.2-1) UNRELEASED; urgency=medium
+
+  * Update to new upstream version 1.2.
+
+ -- Iain R. Learmonth <irl@fsfe.org>  Wed, 10 Jun 2015 15:39:29 +0100
+
 direwolf (1.1-2) unstable; urgency=medium
 
   * Added a Breaks+Replaces as files have moved between packages. (Closes:
