@@ -4,7 +4,7 @@ Last-Update: 2015-02-05
 
 --- direwolf.orig/Makefile.linux
 +++ direwolf/Makefile.linux
-@@ -100,8 +100,8 @@
+@@ -200,8 +200,8 @@
  
  # Uncomment following lines to enable GPS interface & tracker function.
  
@@ -14,4 +14,4 @@ Last-Update: 2015-02-05
 +LDLIBS += -lgps
  
  
- 
+ # Name of current directory.

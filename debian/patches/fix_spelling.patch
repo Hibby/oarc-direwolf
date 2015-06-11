@@ -4,7 +4,7 @@ Last-Update: 2015-02-05
 
 --- direwolf.orig/config.c
 +++ direwolf/config.c
-@@ -2649,7 +2649,7 @@
+@@ -3468,7 +3468,7 @@
  	  }
  	  else {
  	    text_color_set(DW_COLOR_ERROR);
@@ -15,7 +15,7 @@ Last-Update: 2015-02-05
  
 --- direwolf.orig/decode_aprs.c
 +++ direwolf/decode_aprs.c
-@@ -1581,7 +1581,7 @@
+@@ -1597,7 +1597,7 @@
   *
   * Outputs:	??? TBD
   *
