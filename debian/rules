@@ -12,3 +12,7 @@ override_dh_auto_install:
 override_dh_auto_clean:
 	make -f Makefile.linux clean
 
+override_dh_fixperms:
+	dh_fixperms
+	chmod 644 debian/direwolf/usr/share/direwolf/dw-icon.png
+
