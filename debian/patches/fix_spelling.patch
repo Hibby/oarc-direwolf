@@ -102,7 +102,8 @@ Last-Update: 2015-02-05
 +.B gen_packets \-o x.wav \-B 9600
  .P
  .RS
- Both of these are equivalent.  "-B 9600" automatically selects scrambled baseband rather than AFSK.
+-Both of these are equivalent.  "-B 9600" automatically selects scrambled baseband rather than AFSK.
++Both of these are equivalent.  "\-B 9600" automatically selects scrambled baseband rather than AFSK.
  .RE
  .P
 -.B gen_packets -o x.wav -m 1600 -s 1800 -b 300
