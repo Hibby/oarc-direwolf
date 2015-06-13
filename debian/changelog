@@ -1,8 +1,39 @@
-direwolf (1.2-1) UNRELEASED; urgency=medium
+direwolf (1.2-1) unstable; urgency=medium
 
   * Update to new upstream version 1.2.
+  * Microsoft Word sources for PDF files:
+    - Added:
+      * A-Better-APRS-Packet-Demodulator-Part-1-1200-baud.docx
+      * A-Better-APRS-Packet-Demodulator-Part-2-9600-baud.docx
+    - Updated:
+      * APRStt-Implementation-Notes.docx
+      * Raspberry-Pi-APRS-Tracker.docx
+      * Raspberry-Pi-APRS.docx
+      * User-Guide.docx
+    - Removed:
+      * Quick-Start-Guide-Windows.docx
+  * debian/source/include-binaries:
+    - Allowed inclusion of new Microsoft Word sources and removed the removed
+      source.
+  * man pages:
+    - Dire Wolf now ships with its own man pages, using the upstream man pages
+      instead of the man pages created for Debian.
+  * debian/rules:
+    - Installation is now performed using dh instead of using the Makefile
+  * debian/direwolf-docs.doc-base:
+    - PDFs are now installed under the direwolf-docs doc directory
+  * debian/direwolf.examples:
+    - Installs the example direwolf.conf
+  * Refreshed patches:
+    - fix_documentation_path.patch (de-fuzz)
+    - enable_gps.patch (de-fuzz)
+    - fix_hardening-no-relro.patch (now adding LDFLAGS to CFLAGS instead of
+      passing LDFLAGS on every CC call)
+    - fix_spelling.patch (multiple new spelling fixes)
+  * debian/copyright:
+    - Dire Wolf now includes some code copied from geotranz
 
- -- Iain R. Learmonth <irl@fsfe.org>  Wed, 10 Jun 2015 15:39:29 +0100
+ -- Iain R. Learmonth <irl@fsfe.org>  Sat, 13 Jun 2015 19:58:02 +0100
 
 direwolf (1.1-2) unstable; urgency=medium
 
