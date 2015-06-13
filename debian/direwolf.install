@@ -6,8 +6,6 @@ aclients	usr/bin
 log2gpx		usr/bin
 gen_packets	usr/bin
 atest		usr/bin
-ttcalc		usr/bin
-dwespeak.sh	usr/bin
 tocalls.txt	usr/share/direwolf
 symbols-new.txt	usr/share/direwolf
 symbolsX.txt	usr/share/direwolf
