@@ -2,7 +2,7 @@ Source: direwolf
 Section: hamradio
 Priority: optional
 Maintainer: Debian Hamradio Maintainers <debian-hams@lists.debian.org>
-Uploaders: Iain R. Learmonth <irl@fsfe.org>
+Uploaders: Iain R. Learmonth <irl@debian.org>
 Build-Depends: debhelper (>= 9), libasound2-dev, libgps-dev
 Standards-Version: 3.9.6
 Vcs-Browser: http://anonscm.debian.org/cgit/pkg-hamradio/direwolf.git/
