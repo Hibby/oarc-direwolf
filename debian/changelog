@@ -1,11 +1,11 @@
-direwolf (1.2-2) UNRELEASED; urgency=medium
+direwolf (1.2-2) unstable; urgency=medium
 
   * Allow building with gpsd API major version 6 (Closes: #803686)
    - Thanks Bas Couwenberg!
   * debian/control:
    - Updated my email address in uploaders.
 
- -- Iain R. Learmonth <irl@debian.org>  Mon, 02 Nov 2015 14:13:28 +0000
+ -- Iain R. Learmonth <irl@debian.org>  Mon, 02 Nov 2015 14:15:36 +0000
 
 direwolf (1.2-1) unstable; urgency=medium
 
