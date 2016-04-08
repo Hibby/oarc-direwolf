@@ -1,3 +1,10 @@
+direwolf (1.2-3) unstable; urgency=medium
+
+  * Allow for building only architecture-independent packages (Closes: #806015)
+   - Thanks Santiago Vila!
+
+ -- Iain R. Learmonth <irl@debian.org>  Fri, 08 Apr 2016 21:40:24 +0100
+
 direwolf (1.2-2) unstable; urgency=medium
 
   * Allow building with gpsd API major version 6 (Closes: #803686)
