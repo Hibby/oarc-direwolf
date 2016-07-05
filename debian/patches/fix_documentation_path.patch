@@ -2,10 +2,10 @@ Description: Correct all mentions of the documentation path in the source code
 Author: Iain R. Learmonth <irl@fsfe.org>
 Last-Update: 2014-09-08
 
---- direwolf.orig/direwolf.c
-+++ direwolf/direwolf.c
-@@ -1034,7 +1034,7 @@
- 
+--- a/direwolf.c
++++ b/direwolf.c
+@@ -1103,7 +1103,7 @@
+   
  #if __WIN32__
  #else
 -	dw_printf ("Complete documentation can be found in /usr/local/share/doc/direwolf.\n");

@@ -2,9 +2,9 @@ Description: Fix a few spelling mistakes
 Author: Iain R. Learmonth <irl@fsfe.org>                                         
 Last-Update: 2015-02-05
 
---- direwolf.orig/config.c
-+++ direwolf/config.c
-@@ -3468,7 +3468,7 @@
+--- a/config.c
++++ b/config.c
+@@ -4299,7 +4299,7 @@
  	  }
  	  else {
  	    text_color_set(DW_COLOR_ERROR);
@@ -13,31 +13,9 @@ Last-Update: 2015-02-05
  	  }
  	}
  
---- direwolf.orig/decode_aprs.c
-+++ direwolf/decode_aprs.c
-@@ -1597,7 +1597,7 @@
-  *
-  * Outputs:	??? TBD
-  *
-- * Description:	An APRS message is a text string with a specifed addressee.
-+ * Description:	An APRS message is a text string with a specified addressee.
-  *
-  *		It's a lot more complicated with different types of addressees
-  *		and replies with acknowledgement or rejection.
---- direwolf.orig/gen_packets.c
-+++ direwolf/gen_packets.c
-@@ -350,7 +350,7 @@
- 
-         if (strlen(output_file) == 0) {
-           text_color_set(DW_COLOR_ERROR); 
--          dw_printf ("ERROR: The -o ouput file option must be specified.\n");
-+          dw_printf ("ERROR: The -o output file option must be specified.\n");
-           usage (argv);
-           exit (1);
-         }
---- direwolf.orig/man1/direwolf.1
-+++ direwolf/man1/direwolf.1
-@@ -119,13 +119,13 @@
+--- a/man1/direwolf.1
++++ b/man1/direwolf.1
+@@ -133,13 +133,13 @@
  direwolf can listen over a UDP port with options like this:
  .RS
  .P
@@ -53,8 +31,8 @@ Last-Update: 2015-02-05
  .RE
  
  
---- direwolf.orig/man1/gen_packets.1
-+++ direwolf/man1/gen_packets.1
+--- a/man1/gen_packets.1
++++ b/man1/gen_packets.1
 @@ -5,12 +5,12 @@
  
  
@@ -102,8 +80,7 @@ Last-Update: 2015-02-05
 +.B gen_packets \-o x.wav \-B 9600
  .P
  .RS
--Both of these are equivalent.  "-B 9600" automatically selects scrambled baseband rather than AFSK.
-+Both of these are equivalent.  "\-B 9600" automatically selects scrambled baseband rather than AFSK.
+ Both of these are equivalent.  "-B 9600" automatically selects scrambled baseband rather than AFSK.
  .RE
  .P
 -.B gen_packets -o x.wav -m 1600 -s 1800 -b 300
@@ -118,13 +95,13 @@ Last-Update: 2015-02-05
  Both of these generate 200 Hz shift, 300 baud, suitable for HF SSB transceiver.
  .RE
  .P
--.B echo -n "WB2OSZ>WORLD:Hello, world!" | gen_packets -a 25 -o x.wav -
-+.B echo \-n "WB2OSZ>WORLD:Hello, world!" | gen_packets \-a 25 \-o x.wav \-
+-.B echo -n 'WB2OSZ>WORLD:Hello, world!' | gen_packets -a 25 -o x.wav -
++.B echo \-n 'WB2OSZ>WORLD:Hello, world!' | gen_packets \-a 25 \-o x.wav \-
+ .PD 0
  .P
- .RS
- Read message from stdin and put quarter volume sound into the file x.wav.
---- direwolf.orig/man1/decode_aprs.1
-+++ direwolf/man1/decode_aprs.1
+ .PD
+--- a/man1/decode_aprs.1
++++ b/man1/decode_aprs.1
 @@ -46,9 +46,11 @@
  cut-n-paste the bad packets into a text file.  Here a couple examples:
  .P
@@ -137,3 +114,25 @@ Last-Update: 2015-02-05
  .RE
  .P
  If  you  simply  fed  this  into decode_aprs, it would complain about the 
+--- a/decode_aprs.c
++++ b/decode_aprs.c
+@@ -1417,7 +1417,7 @@
+  *
+  * Outputs:	??? TBD
+  *
+- * Description:	An APRS message is a text string with a specifed addressee.
++ * Description:	An APRS message is a text string with a specified addressee.
+  *
+  *		It's a lot more complicated with different types of addressees
+  *		and replies with acknowledgement or rejection.
+--- a/gen_packets.c
++++ b/gen_packets.c
+@@ -374,7 +374,7 @@
+ 
+         if (strlen(output_file) == 0) {
+           text_color_set(DW_COLOR_ERROR); 
+-          dw_printf ("ERROR: The -o ouput file option must be specified.\n");
++          dw_printf ("ERROR: The -o output file option must be specified.\n");
+           usage (argv);
+           exit (1);
+         }

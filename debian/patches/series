@@ -1,6 +1,3 @@
-libgps22.patch
-fix_start_script_paths.patch
 fix_documentation_path.patch
 fix_hardening-no-relro.patch
-enable_gps.patch
 fix_spelling.patch

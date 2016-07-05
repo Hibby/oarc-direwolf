@@ -1,17 +1,21 @@
 Source: direwolf
-Section: hamradio
-Priority: optional
 Maintainer: Debian Hamradio Maintainers <debian-hams@lists.debian.org>
 Uploaders: Iain R. Learmonth <irl@debian.org>
-Build-Depends: debhelper (>= 9), libasound2-dev, libgps-dev
-Standards-Version: 3.9.6
-Vcs-Browser: http://anonscm.debian.org/cgit/pkg-hamradio/direwolf.git/
-Vcs-Git: git://anonscm.debian.org/pkg-hamradio/direwolf.git
-Homepage: http://home.comcast.net/~wb2osz/site/
+Section: hamradio
+Priority: optional
+Build-Depends: debhelper (>= 9),
+               libasound2-dev,
+               libgps-dev
+Standards-Version: 3.9.8
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-hamradio/direwolf.git/
+Vcs-Git: https://anonscm.debian.org/git/pkg-hamradio/direwolf.git
+Homepage: https://github.com/wb2osz/direwolf
 
 Package: direwolf
 Architecture: alpha amd64 arm64 armel armhf i386 mipsel ppc64el sh4 x32
-Depends: ${shlibs:Depends}, ${misc:Depends}, direwolf-docs
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         direwolf-docs
 Suggests: gpsd
 Breaks: direwolf-docs (<< 1.1-1)
 Replaces: direwolf-docs (<< 1.1-1)
@@ -25,7 +29,8 @@ Description: Soundcard TNC for APRS
 Package: direwolf-docs
 Architecture: all
 Section: doc
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
 Breaks: direwolf (<< 1.1-1)
 Replaces: direwolf (<< 1.1-1)
 Description: Soundcard TNC for APRS - Documentation
@@ -36,4 +41,3 @@ Description: Soundcard TNC for APRS - Documentation
  AX25, SARTrack, and many others.
  .
  This package contains architecture independent documentation for direwolf.
-
