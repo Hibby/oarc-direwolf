@@ -8,6 +8,8 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 override_dh_auto_build:
 	make -f Makefile.linux
 
+override_dh_installinit:
+	dh_installinit --no-start --noscripts
 override_dh_auto_install:
 	@echo "Skipping the install to /usr/local"
 
