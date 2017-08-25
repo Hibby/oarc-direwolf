@@ -4,7 +4,7 @@ Last-Update: 2015-02-05
 
 --- a/config.c
 +++ b/config.c
-@@ -4299,7 +4299,7 @@
+@@ -4898,7 +4898,7 @@
  	  }
  	  else {
  	    text_color_set(DW_COLOR_ERROR);
@@ -15,7 +15,7 @@ Last-Update: 2015-02-05
  
 --- a/man1/direwolf.1
 +++ b/man1/direwolf.1
-@@ -133,13 +133,13 @@
+@@ -135,13 +135,13 @@
  direwolf can listen over a UDP port with options like this:
  .RS
  .P
@@ -116,9 +116,9 @@ Last-Update: 2015-02-05
  If  you  simply  fed  this  into decode_aprs, it would complain about the 
 --- a/decode_aprs.c
 +++ b/decode_aprs.c
-@@ -1417,7 +1417,7 @@
+@@ -1461,7 +1461,7 @@
   *
-  * Outputs:	??? TBD
+  *		A->g_message_number	Message number if any.  Required for ack/rej.
   *
 - * Description:	An APRS message is a text string with a specifed addressee.
 + * Description:	An APRS message is a text string with a specified addressee.
@@ -127,7 +127,7 @@ Last-Update: 2015-02-05
   *		and replies with acknowledgement or rejection.
 --- a/gen_packets.c
 +++ b/gen_packets.c
-@@ -374,7 +374,7 @@
+@@ -446,7 +446,7 @@
  
          if (strlen(output_file) == 0) {
            text_color_set(DW_COLOR_ERROR); 

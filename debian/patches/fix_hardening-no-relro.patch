@@ -4,19 +4,7 @@ Last-Update: 2014-09-08
 
 --- a/Makefile.linux
 +++ b/Makefile.linux
-@@ -12,9 +12,9 @@
- 	@echo " "
- 
- CC := gcc
--CFLAGS := -O3 -pthread -Igeotranz
-+CFLAGS += -O3 -pthread -Igeotranz
- 
--LDFLAGS := -lm -lpthread -lrt
-+LDFLAGS += -lm -lpthread -lrt
- 
- 
- 
-@@ -338,13 +338,13 @@
+@@ -402,13 +402,13 @@
  # Multiple AGWPE network or serial port clients to test TNCs side by side.
  
  aclients : aclients.c ax25_pad.c fcs_calc.c textcolor.o misc.a
