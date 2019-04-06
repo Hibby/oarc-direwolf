@@ -1,2 +1,3 @@
 fix_documentation_path.patch
 fix_hardening-no-relro.patch
+Issue-196-Compatibility-with-GPSD-API-7.patch
