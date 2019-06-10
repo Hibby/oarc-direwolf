@@ -1,6 +1,5 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: direwolf
-Files-Excluded: doc/*.pdf
 Source: https://github.com/wb2osz/direwolf
 Comment:
  The files in misc/ are copied directly from the Cygwin source code. These are
@@ -10,6 +9,7 @@ Comment:
  Please see ftp-master's comments on this here:
  https://lists.debian.org/debian-hams/2014/09/msg00063.html
  https://lists.debian.org/debian-hams/2014/10/msg00003.html
+Files-Excluded: doc/*.pdf
 
 Files: *
 Copyright: (C) 2011-2014 John Langner WB2OSZ
@@ -24,7 +24,7 @@ Copyright: (C) 2002, 2003, 2005 Free Software Foundation, Inc.
 License: LGPL-2.1+
 
 Files: misc/strcasestr.c
-Copyright: 
+Copyright:
  (C) 1990, 1993 The Regents of the University of California
  (C) RedHat
 License: BSD-4-clause or GPL-2+
@@ -174,4 +174,3 @@ License: Permissive-NGA
  Secretary of Defense.  Do not create the impression that NGA, the Secretary of
  Defense or the Director of National Intelligence has endorsed any product
  derived from GEOTRANS.
-
