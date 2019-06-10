@@ -4,7 +4,7 @@ Last-Update: 2014-09-08
 
 --- a/direwolf.c
 +++ b/direwolf.c
-@@ -1238,7 +1238,7 @@
+@@ -1292,7 +1292,7 @@
    
  #if __WIN32__
  #else
