@@ -16,7 +16,8 @@ Package: direwolf
 Architecture: alpha amd64 arm64 armel armhf i386 mipsel ppc64el sh4 x32
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         direwolf-docs
+         direwolf-docs,
+         adduser
 Suggests: gpsd
 Breaks: direwolf-docs (<< 1.1-1)
 Replaces: direwolf-docs (<< 1.1-1)
