@@ -1,3 +1,23 @@
+direwolf (1.5+dfsg-1) experimental; urgency=medium
+
+  * New upstream version 1.5+dfsg
+  * debian/control:
+   - Removed obsolete build dependency on dh-systemd
+   - Updated Vcs-* fields for salsa
+   - Updated Standards Version to 4.3.0
+   - Added adduser to and removed direwolf-docs from
+     dependencies for direwolf
+  * debian/patches:
+   - Refreshed patches
+  * debian/compat:
+   - Level bumped to 12
+  * debian/rules:
+   - Use dh_installsystemd
+  * debian/copyright:
+   - Use https URL for format link
+
+ -- Iain R. Learmonth <irl@debian.org>  Mon, 10 Jun 2019 18:48:29 +0100
+
 direwolf (1.4+dfsg-1) unstable; urgency=medium
 
   * New upstream version 1.4+dfsg
