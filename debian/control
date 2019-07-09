@@ -6,6 +6,7 @@ Priority: optional
 Build-Depends: debhelper (>= 12),
                libasound2-dev,
                libgps-dev,
+               libhamlib-dev,
                adduser
 Standards-Version: 4.3.0
 Vcs-Browser: https://salsa.debian.org/debian-hamradio-team/direwolf
