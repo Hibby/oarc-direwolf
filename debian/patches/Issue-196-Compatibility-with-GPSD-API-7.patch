@@ -11,8 +11,6 @@ Subject: [PATCH] Issue 196 - Compatibility with GPSD API 7.
  dwgpsd.c | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/dwgpsd.c b/dwgpsd.c
-index 5709497..ff37c68 100644
 --- a/dwgpsd.c
 +++ b/dwgpsd.c
 @@ -57,7 +57,10 @@
@@ -21,13 +19,13 @@ index 5709497..ff37c68 100644
  // GPSD_API_MAJOR_VERSION 6 provided by libgps22 when the attached patch is applied.
 -#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 6
 +
-+// Also compatible with API 7 with conditional compilation later.
++// Try to compile with later APIs - this avoids uploads for gpsd code changes
 +
-+#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 7
++#if GPSD_API_MAJOR_VERSION < 5
  #error libgps API version might be incompatible.
  #endif
  
-@@ -257,7 +260,19 @@ static void * read_gpsd_thread (void *arg)
+@@ -257,7 +260,19 @@ static void * read_gpsd_thread (void *ar
  	    /* Fall thru to read which should get error and bail out. */
  	  }
  
@@ -47,6 +45,3 @@ index 5709497..ff37c68 100644
  	    text_color_set(DW_COLOR_ERROR);
  
  	    dw_printf ("------------------------------------------\n");
--- 
-2.17.1
-
