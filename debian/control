@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 12),
                libgps-dev,
                libhamlib-dev,
                adduser
-Standards-Version: 4.3.0
+Standards-Version: 4.4.1
 Vcs-Browser: https://salsa.debian.org/debian-hamradio-team/direwolf
 Vcs-Git: https://salsa.debian.org/debian-hamradio-team/direwolf.git
 Homepage: https://github.com/wb2osz/direwolf
