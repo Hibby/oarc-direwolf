@@ -1,3 +1,10 @@
+direwolf (1.5+dfsg-4) unstable; urgency=medium
+
+  * Adds the audio supplemental group to the systemd service unit to allow the
+    use of the sound card when running as a system service
+
+ -- Iain R. Learmonth <irl@debian.org>  Fri, 22 Nov 2019 16:48:53 +0000
+
 direwolf (1.5+dfsg-3) unstable; urgency=medium
 
   [ Bernd Zeimetz ]
