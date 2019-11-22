@@ -5,7 +5,7 @@ AssertPathExists=/etc/direwolf.conf
 
 [Service]
 User=direwolf
-SupplementaryGroups=dialout
+SupplementaryGroups=dialout audio
 ExecStart=/usr/bin/direwolf -c /etc/direwolf.conf
 
 [Install]
