@@ -3,7 +3,7 @@ Maintainer: Debian Hamradio Maintainers <debian-hams@lists.debian.org>
 Uploaders: Iain R. Learmonth <irl@debian.org>
 Section: hamradio
 Priority: optional
-Build-Depends: debhelper (>= 12),
+Build-Depends: debhelper-compat (= 12),
                libasound2-dev,
                libgps-dev,
                libhamlib-dev,
