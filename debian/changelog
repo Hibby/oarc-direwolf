@@ -1,6 +1,7 @@
 direwolf (1.5+dfsg-5) UNRELEASED; urgency=medium
 
   * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Bug-Database.
 
  -- Debian Janitor <janitor@jelmer.uk>  Sun, 15 Dec 2019 13:22:12 +0000
 
