@@ -1,9 +1,14 @@
-direwolf (1.5+dfsg-5) UNRELEASED; urgency=medium
+direwolf (1.5+dfsg-5) unstable; urgency=medium
 
+  [ Debian Janitor ]
   * Set debhelper-compat version in Build-Depends.
   * Set upstream metadata fields: Bug-Database.
 
- -- Debian Janitor <janitor@jelmer.uk>  Sun, 15 Dec 2019 13:22:12 +0000
+  [ Iain R. Learmonth ]
+  * Adds additional little-endian architectures (Fixes: #945297)
+  * Install kissutil (Fixes: #954431)
+
+ -- Iain R. Learmonth <irl@debian.org>  Mon, 14 Sep 2020 13:45:57 +0100
 
 direwolf (1.5+dfsg-4) unstable; urgency=medium
 
