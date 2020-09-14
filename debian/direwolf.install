@@ -1,5 +1,6 @@
 direwolf	usr/bin
 decode_aprs	usr/bin
+kissutil	usr/bin
 text2tt		usr/bin
 tt2text		usr/bin
 aclients	usr/bin
