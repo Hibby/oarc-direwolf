@@ -1,8 +1,12 @@
-direwolf (1.6+dfsg-1) UNRELEASED; urgency=medium
+direwolf (1.6+dfsg-1) unstable; urgency=medium
 
-  * New upstream version.
+  * New upstream version, buildsystem switched to cmake.
+  * Revert to Architecture: any, big endian is supported now.
+  * B-D on libudev-dev [linux-any].
+  * Add debian/gitlab-ci.yml.
+  * Adopt package from Ian, thanks! (Closes: #970374)
 
- -- Christoph Berg <myon@debian.org>  Sat, 02 Jan 2021 13:26:41 +0100
+ -- Christoph Berg <myon@debian.org>  Sun, 03 Jan 2021 22:14:07 +0100
 
 direwolf (1.5+dfsg-5) unstable; urgency=medium
 

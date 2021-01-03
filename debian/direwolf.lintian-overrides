@@ -1,0 +1,11 @@
+# These are used with extensions in the example config and should be treated as well-known names
+direwolf: script-with-language-extension usr/bin/dwespeak.sh
+direwolf: script-with-language-extension usr/bin/telem-balloon.pl
+direwolf: script-with-language-extension usr/bin/telem-bits.pl
+direwolf: script-with-language-extension usr/bin/telem-data.pl
+direwolf: script-with-language-extension usr/bin/telem-data91.pl
+direwolf: script-with-language-extension usr/bin/telem-eqns.pl
+direwolf: script-with-language-extension usr/bin/telem-parm.pl
+direwolf: script-with-language-extension usr/bin/telem-seq.sh
+direwolf: script-with-language-extension usr/bin/telem-unit.pl
+direwolf: script-with-language-extension usr/bin/telem-volts.py
