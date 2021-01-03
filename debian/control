@@ -16,7 +16,7 @@ Vcs-Git: https://salsa.debian.org/debian-hamradio-team/direwolf.git
 Homepage: https://github.com/wb2osz/direwolf
 
 Package: direwolf
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          adduser
