@@ -1,6 +1,4 @@
 fix_documentation_path.patch
-#fix_hardening-no-relro.patch
-#Issue-196-Compatibility-with-GPSD-API-7.patch
 no-install-pdf
 python3
 desktop-main-category
