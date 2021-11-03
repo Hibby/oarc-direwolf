@@ -1,3 +1,10 @@
+direwolf (1.6+dfsg-2.1) UNRELEASED; urgency=medium
+
+  * Put link to online PDF documentation in man pages and fix it
+    in --help output.
+
+ -- Daniele Forsi <iu5hkx@gmail.com>  Wed, 03 Nov 2021 18:37:33 +0100
+
 direwolf (1.6+dfsg-2) UNRELEASED; urgency=medium
 
   * Restrict again to linux-any. In theory other OSes are supported via
