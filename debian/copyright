@@ -15,21 +15,21 @@ Files: *
 Copyright: (C) 2011-2014 John Langner WB2OSZ
 License: GPL-2+
 
-Files: geotranz/*
+Files: external/geotranz/*
 Copyright: National Geospatial-Intelligence Agency
 License: Permissive-NGA
 
-Files: regex/*
+Files: external/regex/*
 Copyright: (C) 2002, 2003, 2005 Free Software Foundation, Inc.
 License: LGPL-2.1+
 
-Files: misc/strcasestr.c
+Files: external/misc/strcasestr.c
 Copyright:
  (C) 1990, 1993 The Regents of the University of California
  (C) RedHat
 License: BSD-4-clause or GPL-2+
 
-Files: misc/strtok_r.c misc/strsep.c
+Files: external/misc/strtok_r.c external/misc/strsep.c
 Copyright:
  (C) 1988 Regents of the University of California
  (C) RedHat
