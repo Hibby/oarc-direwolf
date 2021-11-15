@@ -9,3 +9,11 @@ direwolf: script-with-language-extension usr/bin/telem-parm.pl
 direwolf: script-with-language-extension usr/bin/telem-seq.sh
 direwolf: script-with-language-extension usr/bin/telem-unit.pl
 direwolf: script-with-language-extension usr/bin/telem-volts.py
+# x-terminal-emulator is managed by update-alternatives
+direwolf: desktop-command-not-in-package usr/share/applications/direwolf.desktop usr/bin/x-terminal-emulator
+# This is actually a configuration file
+direwolf: package-contains-documentation-outside-usr-share-doc usr/share/direwolf/symbols-new.txt
+# This is actually a configuration file
+direwolf: package-contains-documentation-outside-usr-share-doc usr/share/direwolf/symbolsX.txt
+# This is actually a configuration file
+direwolf: package-contains-documentation-outside-usr-share-doc usr/share/direwolf/tocalls.txt
