@@ -1,4 +1,5 @@
-direwolf (1.6+dfsg-2) UNRELEASED; urgency=medium
+direwolf (1.6+dfsg-2) unstable; urgency=medium
+
   [ Daniele Forsi ]
   * Put link to online PDF documentation in man pages and fix link
     in --help output.
@@ -8,8 +9,9 @@ direwolf (1.6+dfsg-2) UNRELEASED; urgency=medium
   * Restrict again to linux-any. In theory other OSes are supported via
     liboss4-salsa-dev but that is lacking snd_pcm_recover so don't bother
     porting for now.
+  * Fix GitHub watch file.
 
- -- Christoph Berg <myon@debian.org>  Sun, 03 Jan 2021 23:37:00 +0100
+ -- Christoph Berg <myon@debian.org>  Wed, 05 Jan 2022 11:07:20 +0100
 
 direwolf (1.6+dfsg-1) unstable; urgency=medium
 

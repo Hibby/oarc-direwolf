@@ -1,3 +1,3 @@
-version=3
+version=4
 opts=dversionmangle=s/.dfsg//,repacksuffix=+dfsg \
-https://github.com/wb2osz/direwolf/releases .*/archive/v?(\d[\d.-]+)\.(?:tar(?:\.gz|\.bz2)?|tgz)
+https://github.com/wb2osz/direwolf/tags .*/v?(\d[\d.-]+)\.(?:tar(?:\.gz|\.bz2)?|tgz)
