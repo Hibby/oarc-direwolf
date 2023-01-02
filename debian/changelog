@@ -1,3 +1,11 @@
+direwolf (1.6+dfsg-3) UNRELEASED; urgency=medium
+
+  * Update lintian override info format in d/direwolf.lintian-overrides on line
+    2-11, 15, 17, 19.
+  * Update standards version to 4.6.2, no changes needed.
+
+ -- Daniele Forsi <iu5hkx@gmail.com>  Mon, 02 Jan 2023 10:22:52 -0000
+
 direwolf (1.6+dfsg-2) unstable; urgency=medium
 
   [ Daniele Forsi ]
