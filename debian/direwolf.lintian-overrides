@@ -1,19 +1,19 @@
 # These are used with extensions in the example config and should be treated as well-known names
-direwolf: script-with-language-extension usr/bin/dwespeak.sh
-direwolf: script-with-language-extension usr/bin/telem-balloon.pl
-direwolf: script-with-language-extension usr/bin/telem-bits.pl
-direwolf: script-with-language-extension usr/bin/telem-data.pl
-direwolf: script-with-language-extension usr/bin/telem-data91.pl
-direwolf: script-with-language-extension usr/bin/telem-eqns.pl
-direwolf: script-with-language-extension usr/bin/telem-parm.pl
-direwolf: script-with-language-extension usr/bin/telem-seq.sh
-direwolf: script-with-language-extension usr/bin/telem-unit.pl
-direwolf: script-with-language-extension usr/bin/telem-volts.py
+direwolf: script-with-language-extension [usr/bin/dwespeak.sh]
+direwolf: script-with-language-extension [usr/bin/telem-balloon.pl]
+direwolf: script-with-language-extension [usr/bin/telem-bits.pl]
+direwolf: script-with-language-extension [usr/bin/telem-data.pl]
+direwolf: script-with-language-extension [usr/bin/telem-data91.pl]
+direwolf: script-with-language-extension [usr/bin/telem-eqns.pl]
+direwolf: script-with-language-extension [usr/bin/telem-parm.pl]
+direwolf: script-with-language-extension [usr/bin/telem-seq.sh]
+direwolf: script-with-language-extension [usr/bin/telem-unit.pl]
+direwolf: script-with-language-extension [usr/bin/telem-volts.py]
 # x-terminal-emulator is managed by update-alternatives
 direwolf: desktop-command-not-in-package usr/share/applications/direwolf.desktop usr/bin/x-terminal-emulator
 # This is actually a configuration file
-direwolf: package-contains-documentation-outside-usr-share-doc usr/share/direwolf/symbols-new.txt
+direwolf: package-contains-documentation-outside-usr-share-doc [usr/share/direwolf/symbols-new.txt]
 # This is actually a configuration file
-direwolf: package-contains-documentation-outside-usr-share-doc usr/share/direwolf/symbolsX.txt
+direwolf: package-contains-documentation-outside-usr-share-doc [usr/share/direwolf/symbolsX.txt]
 # This is actually a configuration file
-direwolf: package-contains-documentation-outside-usr-share-doc usr/share/direwolf/tocalls.txt
+direwolf: package-contains-documentation-outside-usr-share-doc [usr/share/direwolf/tocalls.txt]
