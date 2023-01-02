@@ -10,7 +10,7 @@ Build-Depends: cmake,
                libhamlib-dev,
                libudev-dev [linux-any],
                adduser
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 Vcs-Browser: https://salsa.debian.org/debian-hamradio-team/direwolf
 Vcs-Git: https://salsa.debian.org/debian-hamradio-team/direwolf.git
 Homepage: https://github.com/wb2osz/direwolf
