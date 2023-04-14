@@ -1,7 +1,7 @@
 //
 //    This file is part of Dire Wolf, an amateur radio packet TNC.
 //
-//    Copyright (C) 2011, 2013, 2014, 2015, 2016, 2019  John Langner, WB2OSZ
+//    Copyright (C) 2011, 2013, 2014, 2015, 2016, 2019, 2021  John Langner, WB2OSZ
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -56,7 +56,15 @@
  *			gen_packets -n 100 -o z2.wav
  *			atest z2.wav
  *
- *		
+ *		Variable speed. e.g. 95% to 105% of normal speed.
+ *		Required parameter is max % below and above normal.
+ *		Optionally specify step other than 0.1%.
+ *		Used to test how tolerant TNCs are to senders not
+ *		not using exactly the right baud rate.
+ *
+ *			gen_packets -v 5
+ *			gen_packets -v 5,0.5
+ *
  *------------------------------------------------------------------*/
 
 
@@ -67,6 +75,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <assert.h>
+#include <math.h>
 
 #include "audio.h"
 #include "ax25_pad.h"
@@ -76,6 +85,7 @@
 #include "morse.h"
 #include "dtmf.h"
 #include "fx25.h"
+#include "il2p.h"
 
 
 /* Own random number generator so we can get */
@@ -97,6 +107,7 @@ static int audio_file_close (void);
 static int g_add_noise = 0;
 static float g_noise_level = 0;
 static int g_morse_wpm = 0;		/* Send morse code at this speed. */
+
 
 
 static struct audio_s modem;
@@ -123,6 +134,7 @@ static void send_packet (char *str)
 	    return;
 	  }
 	  flen = ax25_pack (pp, fbuf);
+	  (void)flen;
 	  for (c=0; c<modem.adev[0].num_channels; c++)
 	  {
 
@@ -151,12 +163,10 @@ static void send_packet (char *str)
 	      gen_tone_put_sample (c, 0, 0);
 	    }
 #endif
-	    hdlc_send_flags (c, 8, 0);
-	    hdlc_send_flags (c, 8, 0);
-	    hdlc_send_flags (c, 8, 0);
-	    hdlc_send_flags (c, 8, 0);
-	    hdlc_send_frame (c, fbuf, flen, 0, modem.fx25_xmit_enable);
-	    hdlc_send_flags (c, 2, 1);
+
+	    layer2_preamble_postamble (c, 32, 0, &modem);
+	    layer2_send_frame (c, pp, 0, &modem);
+	    layer2_preamble_postamble (c, 2, 1, &modem);
 	  }
 	  ax25_delete (pp);
 	}
@@ -176,6 +186,12 @@ int main(int argc, char **argv)
 	int g_opt = 0;
 	int j_opt = 0;
 	int J_opt = 0;
+	int X_opt = 0;		// send FX.25
+	int I_opt = -1;		// send IL2P rather than AX.25, normal polarity
+	int i_opt = -1;		// send IL2P rather than AX.25, inverted polarity
+	double variable_speed_max_error  = 0;	// both in percent
+	double variable_speed_increment = 0.1;
+
 
 /*
  * Set up default values for the modem.
@@ -195,7 +211,7 @@ int main(int argc, char **argv)
           modem.achan[chan].baud = DEFAULT_BAUD;                        /* -b option */
 	}
 
-	modem.achan[0].medium = MEDIUM_RADIO;
+	modem.chan_medium[0] = MEDIUM_RADIO;
 
 
 /*
@@ -227,7 +243,7 @@ int main(int argc, char **argv)
 
 	  /* ':' following option character means arg is required. */
 
-          c = getopt_long(argc, argv, "gjJm:s:a:b:B:r:n:N:o:z:82M:X:",
+          c = getopt_long(argc, argv, "gjJm:s:a:b:B:r:n:N:o:z:82M:X:I:i:v:",
                         long_options, &option_index);
           if (c == -1)
             break;
@@ -424,7 +440,7 @@ int main(int argc, char **argv)
             case '2':				/* -2 for 2 channels of sound */
   
               modem.adev[0].num_channels = 2;
-	      modem.achan[1].medium = MEDIUM_RADIO;
+	      modem.chan_medium[1] = MEDIUM_RADIO;
               text_color_set(DW_COLOR_INFO); 
               dw_printf("2 channels of sound rather than 1.\n");
               break;
@@ -453,8 +469,28 @@ int main(int argc, char **argv)
 
             case 'X':
 
-	      modem.fx25_xmit_enable = atoi(optarg);
+	      X_opt = atoi(optarg);
               break;
+
+            case 'I':			// IL2P, normal polarity
+
+	      I_opt = atoi(optarg);
+              break;
+
+            case 'i':			// IL2P, inverted polarity
+
+	      i_opt = atoi(optarg);
+              break;
+
+            case 'v':			// Variable speed data + an - this percentage
+					// optional comma and increment.
+
+	      variable_speed_max_error = fabs(atof(optarg));
+	      char *q = strchr(optarg, ',');
+	      if (q != NULL) {
+	        variable_speed_increment = fabs(atof(q+1));
+	      }
+	      break;
 
             case '?':
 
@@ -466,7 +502,7 @@ int main(int argc, char **argv)
 
               /* Should not be here. */
               text_color_set(DW_COLOR_ERROR); 
-              dw_printf("?? getopt returned character code 0%o ??\n", c);
+              dw_printf("?? getopt returned character code 0%o ??\n", (unsigned)c);
               usage (argv);
           }
 	}
@@ -507,6 +543,43 @@ int main(int argc, char **argv)
           exit (1);
 	}
 
+	if (X_opt > 0) {
+	    if (I_opt != -1 || i_opt != -1) {
+	        text_color_set(DW_COLOR_ERROR);
+	        dw_printf ("Can't mix -X with -I or -i.\n");
+	        exit (EXIT_FAILURE);
+	    }
+	    modem.achan[0].fx25_strength = X_opt;
+	    modem.achan[0].layer2_xmit = LAYER2_FX25;
+	}
+
+	if (I_opt != -1 && i_opt != -1) {
+	  text_color_set(DW_COLOR_ERROR);
+	  dw_printf ("Can't use both -I and -i at the same time.\n");
+	  exit (EXIT_FAILURE);
+	}
+
+	if (I_opt >= 0) {
+            text_color_set(DW_COLOR_INFO);
+            dw_printf ("Using IL2P normal polarity.\n");
+	    modem.achan[0].layer2_xmit = LAYER2_IL2P;
+	    modem.achan[0].il2p_max_fec = (I_opt > 0);
+	    modem.achan[0].il2p_invert_polarity = 0;	// normal
+	}
+
+	if (i_opt >= 0) {
+            text_color_set(DW_COLOR_INFO);
+            dw_printf ("Using IL2P inverted polarity.\n");
+	    modem.achan[0].layer2_xmit = LAYER2_IL2P;
+	    modem.achan[0].il2p_max_fec = (i_opt > 0);
+	    modem.achan[0].il2p_invert_polarity = 1;	// invert for transmit
+	    if (modem.achan[0].baud == 1200) {
+	      text_color_set(DW_COLOR_ERROR);
+	      dw_printf ("Using -i with 1200 bps is a bad idea.  Use -I instead.\n");
+	    }
+	}
+
+
 /*
  * Open the output file.
  */
@@ -536,6 +609,7 @@ int main(int argc, char **argv)
 	// Just use the default of minimal information.
 
 	fx25_init (1);
+	il2p_init (0);		// There are no "-d" options so far but it could be handy here.
 
         assert (modem.adev[0].bits_per_sample == 8 || modem.adev[0].bits_per_sample == 16);
         assert (modem.adev[0].num_channels == 1 || modem.adev[0].num_channels == 2);
@@ -596,9 +670,35 @@ int main(int argc, char **argv)
  */
       	text_color_set(DW_COLOR_INFO); 
       	dw_printf ("built in message...\n");
-	
 
-	if (packet_count > 0)  {
+//
+// Generate packets with variable speed.
+// This overrides any other number of packets or adding noise.
+//
+
+
+	if (variable_speed_max_error != 0) {
+
+	  int normal_speed = modem.achan[0].baud;
+
+          text_color_set(DW_COLOR_INFO);
+	  dw_printf ("Variable speed.\n");
+
+	  for (double speed_error = - variable_speed_max_error;
+			speed_error <= variable_speed_max_error + 0.001;
+			speed_error += variable_speed_increment) {
+
+	    // Baud is int so we get some roundoff.  Make it real?
+	    modem.achan[0].baud = (int)round(normal_speed * (1. + speed_error / 100.));
+	    gen_tone_init (&modem, amplitude/2, 1);
+
+	    char stemp[256];
+	    snprintf (stemp, sizeof(stemp), "WB2OSZ-15>TEST:, speed %+0.1f%%  The quick brown fox jumps over the lazy dog!", speed_error);
+	    send_packet (stemp);
+	  }
+	}	
+
+	else if (packet_count > 0)  {
 
 /*
  * Generate packets with increasing noise level.
@@ -669,7 +769,9 @@ static void usage (char **argv)
 	dw_printf ("  -g            Scrambled baseband rather than AFSK.\n");
 	dw_printf ("  -j            2400 bps QPSK compatible with direwolf <= 1.5.\n");
 	dw_printf ("  -J            2400 bps QPSK compatible with MFJ-2400.\n");
-	dw_printf ("  -X n          Generate FX.25 frames. Specify number of check bytes: 16, 32, or 64.\n");
+	dw_printf ("  -X n           1 to enable FX.25 transmit.  16, 32, 64 for specific number of check bytes.\n");
+	dw_printf ("  -I n           Enable IL2P transmit.  n=1 is recommended.  0 uses weaker FEC.\n");
+	dw_printf ("  -i n           Enable IL2P transmit, inverted polarity.  n=1 is recommended.  0 uses weaker FEC.\n");
 	dw_printf ("  -m <number>   Mark frequency.  Default is %d.\n", DEFAULT_MARK_FREQ);
 	dw_printf ("  -s <number>   Space frequency.  Default is %d.\n", DEFAULT_SPACE_FREQ);
 	dw_printf ("  -r <number>   Audio sample Rate.  Default is %d.\n", DEFAULT_SAMPLES_PER_SEC);
@@ -677,6 +779,7 @@ static void usage (char **argv)
 	dw_printf ("  -o <file>     Send output to .wav file.\n");
 	dw_printf ("  -8            8 bit audio rather than 16.\n");
 	dw_printf ("  -2            2 channels (stereo) audio rather than one channel.\n");
+	dw_printf ("  -v max[,incr] Variable speed with specified maximum error and increment.\n");
 //	dw_printf ("  -z <number>   Number of leading zero bits before frame.\n");
 //	dw_printf ("                  Default is 12 which is .01 seconds at 1200 bits/sec.\n");
 

@@ -116,7 +116,7 @@ typedef struct pfstate_s {
 
 /*
  * Are we processing APRS or connected mode?
- * This determines whch types of filters are available.
+ * This determines which types of filters are available.
  */
 	int is_aprs;
 
@@ -220,7 +220,7 @@ int pfilter (int from_chan, int to_chan, char *filter, packet_t pp, int is_aprs)
 	pfstate.from_chan = from_chan;
 	pfstate.to_chan = to_chan;
 
-	/* Copy filter string, changing any control characers to spaces. */
+	/* Copy filter string, changing any control characters to spaces. */
 
 	strlcpy (pfstate.filter_str, filter, sizeof(pfstate.filter_str));
 
@@ -235,7 +235,7 @@ int pfilter (int from_chan, int to_chan, char *filter, packet_t pp, int is_aprs)
 	pfstate.is_aprs = is_aprs;
 
 	if (is_aprs) {
-	  decode_aprs (&pfstate.decoded, pp, 1);
+	  decode_aprs (&pfstate.decoded, pp, 1, NULL);
 	}
 
 	next_token(&pfstate);
@@ -776,7 +776,7 @@ static int parse_filter_spec (pfstate_t *pf)
  *		-1 = error detected
  *
  * Description:	Same function is used for all of these because they are so similar.
- *		Look for exact match to any of the specifed strings.
+ *		Look for exact match to any of the specified strings.
  *		All of them allow wildcarding with single * at the end.
  *
  *------------------------------------------------------------------------------*/
@@ -967,7 +967,7 @@ static int filt_t (pfstate_t *pf)
 	      if (strncmp(infop, ":BOM", 4) == 0) return (1);
 /*
  * Or we can have an object.
- * It's not exactly clear how to distiguish this from other objects.
+ * It's not exactly clear how to distinguish this from other objects.
  * It looks like the first 3 characters of the source should be the same
  * as the first 3 characters of the addressee.
  */
@@ -1278,7 +1278,8 @@ static int filt_s (pfstate_t *pf)
  *
  * Name:	filt_i
  *
- * Purpose:	IGate messaging default behavior.
+ * Purpose:	IGate messaging filter.
+ *		This would make sense only for IS>RF direction.
  *
  * Inputs:	pf	- Pointer to current state information.
  *			  token_str should contain something of format:
@@ -1290,7 +1291,7 @@ static int filt_s (pfstate_t *pf)
  *		-1 = error detected
  *
  * Description: Selection is based on time since last heard on RF, and distance
- *		in terms of digipeater hops and/or phyiscal location.
+ *		in terms of digipeater hops and/or physical location.
  *
  *		i/time
  *		i/time/hops
@@ -1307,7 +1308,7 @@ static int filt_s (pfstate_t *pf)
  *		The rest is distanced, in kilometers, from given point.
  *		
  *		Examples:
- *			i/60/0		Heard in past 60 minutes directly.
+ *			i/180/0		Heard in past 3 hours directly.
  *			i/45		Past 45 minutes, default max digi hops.
  *			i/180/3		Default time (3 hours), max 3 digi hops.
  *			i/180/8/42.6/-71.3/50.
@@ -1317,13 +1318,17 @@ static int filt_s (pfstate_t *pf)
  *		The basic idea is that we want to transmit a "message" only if the
  *		addressee has been heard recently and is not too far away.
  *
+ *		That is so we can distinguish messages addressed to a specific
+ *		station, and other sundry uses of the addressee field.
+ *
  *		After passing along a "message" we will also allow the next
  *		position report from the sender of the "message."
  *		That is done somewhere else.  We are not concerned with it here.
  *
  *		IMHO, the rules here are too restrictive.
  *
- *		FIXME -explain
+ *		(1) The APRS-IS would send a "message" to my IGate only if the addressee
+ *		    has been heard nearby recently.  180 minutes, I believe.
  *
  *------------------------------------------------------------------------------*/
 

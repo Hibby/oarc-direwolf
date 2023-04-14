@@ -126,7 +126,7 @@
 	This is documented in the User Guide, section called,
 		"Hamlib PTT Example 2: Use GPIO of USB audio adapter.  (e.g. DMK URI)"
 
-	It's rather involved and the explantion doesn't cover the case of multiple
+	It's rather involved and the explanation doesn't cover the case of multiple
 	USB-Audio adapters.  It would be nice to have a little script which lists all
 	of the USB-Audio adapters and the corresponding /dev/hidraw device.
 	( We now have it.  The included "cm108" application. )
@@ -162,15 +162,15 @@
 #include <hamlib/rig.h>
 #endif
 
-#ifdef USE_CM108
-#include "cm108.h"
-#endif
-
 /* So we can have more common code for fd. */
 typedef int HANDLE;
 #define INVALID_HANDLE_VALUE (-1)
 
-#endif
+#endif /* __WIN32__ */
+
+#ifdef USE_CM108
+#include "cm108.h"
+#endif /* USE_CM108 */
 
 #include "textcolor.h"
 #include "audio.h"
@@ -357,6 +357,9 @@ static void get_access_to_gpio (const char *path)
  * We don't have permission.
  * Try a hack which requires that the user be set up to use sudo without a password.
  */
+// FIXME: I think this was a horrible work around for some early release that
+// did not give gpio permission to the pi user.  This should go.
+// Provide recovery instructions when there is a permission failure.
 
 	if (ptt_debug_level >= 2) {
 	  text_color_set(DW_COLOR_ERROR);	// debug message but different color so it stands out.
@@ -494,6 +497,13 @@ void export_gpio(int ch, int ot, int invert, int direction)
  *		matching the pattern "gpio61_*".
  *
  *	We are finally implementing the third choice.
+ */
+
+/*
+ * Then we have the Odroid board with GPIO numbers starting around 480.
+ * Can we simply use those numbers?
+ * Apparently, the export names look like GPIOX.17
+ * https://wiki.odroid.com/odroid-c4/hardware/expansion_connectors#gpio_map_for_wiringpi_library
  */
 
 	struct dirent **file_list;
@@ -737,7 +747,7 @@ void ptt_init (struct audio_s *audio_config_p)
 
 	for (ch = 0; ch < MAX_CHANS; ch++) {
 
-	  if (audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 	    int ot;
 
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
@@ -768,7 +778,7 @@ void ptt_init (struct audio_s *audio_config_p)
 	        int j, k;
 
 	        for (j = ch; j >= 0; j--) {
-	          if (audio_config_p->achan[j].medium == MEDIUM_RADIO) {
+	          if (audio_config_p->chan_medium[j] == MEDIUM_RADIO) {
 		    for (k = ((j==ch) ? (ot - 1) : (NUM_OCTYPES-1)); k >= 0; k--) {
 	              if (strcmp(audio_config_p->achan[ch].octrl[ot].ptt_device,audio_config_p->achan[j].octrl[k].ptt_device) == 0) {
 	                fd = ptt_fd[j][k];
@@ -851,7 +861,7 @@ void ptt_init (struct audio_s *audio_config_p)
 
 	using_gpio = 0;
 	for (ch=0; ch<MAX_CHANS; ch++) {
-	  if (save_audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      if (audio_config_p->achan[ch].octrl[ot].ptt_method == PTT_METHOD_GPIO) {
@@ -876,7 +886,7 @@ void ptt_init (struct audio_s *audio_config_p)
  */
 	    
 	for (ch = 0; ch < MAX_CHANS; ch++) {
-	  if (save_audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 
 	    int ot;	// output control type, PTT, DCD, CON, ...
 	    int it;	// input control type
@@ -908,13 +918,13 @@ void ptt_init (struct audio_s *audio_config_p)
 #if  ( defined(__i386__) || defined(__x86_64__) ) && ( defined(__linux__) || defined(__unix__) )
 
 	for (ch = 0; ch < MAX_CHANS; ch++) {
-	  if (save_audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      if (audio_config_p->achan[ch].octrl[ot].ptt_method == PTT_METHOD_LPT) {
 
 	        /* Can't open the same device more than once so we */
-	        /* need more logic to look for the case of mutiple radio */
+	        /* need more logic to look for the case of multiple radio */
 	        /* channels using different pins of the LPT port. */
 
 	        /* Did some earlier channel use the same ptt device name? */
@@ -923,7 +933,7 @@ void ptt_init (struct audio_s *audio_config_p)
 	        int j, k;
 	
 	        for (j = ch; j >= 0; j--) {
-	          if (audio_config_p->achan[j].medium == MEDIUM_RADIO) {
+	          if (audio_config_p->chan_medium[j] == MEDIUM_RADIO) {
 		    for (k = ((j==ch) ? (ot - 1) : (NUM_OCTYPES-1)); k >= 0; k--) {
 	              if (strcmp(audio_config_p->achan[ch].octrl[ot].ptt_device,audio_config_p->achan[j].octrl[k].ptt_device) == 0) {
 	                fd = ptt_fd[j][k];
@@ -975,7 +985,7 @@ void ptt_init (struct audio_s *audio_config_p)
 
 #ifdef USE_HAMLIB
 	for (ch = 0; ch < MAX_CHANS; ch++) {
-	  if (save_audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      if (audio_config_p->achan[ch].octrl[ot].ptt_method == PTT_METHOD_HAMLIB) {
@@ -1075,7 +1085,7 @@ void ptt_init (struct audio_s *audio_config_p)
 
 	for (ch = 0; ch < MAX_CHANS; ch++) {
 
-	  if (audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      if (audio_config_p->achan[ch].octrl[ot].ptt_method == PTT_METHOD_CM108) {
@@ -1096,7 +1106,7 @@ void ptt_init (struct audio_s *audio_config_p)
 /* Why doesn't it transmit?  Probably forgot to specify PTT option. */
 
 	for (ch=0; ch<MAX_CHANS; ch++) {
-	  if (audio_config_p->achan[ch].medium == MEDIUM_RADIO) {
+	  if (audio_config_p->chan_medium[ch] == MEDIUM_RADIO) {
 	    if(audio_config_p->achan[ch].octrl[OCTYPE_PTT].ptt_method == PTT_METHOD_NONE) {
 	      text_color_set(DW_COLOR_INFO);
 	      dw_printf ("Note: PTT not configured for channel %d. (Ignore this if using VOX.)\n", ch);
@@ -1148,7 +1158,7 @@ void ptt_set (int ot, int chan, int ptt_signal)
 
 	assert (chan >= 0 && chan < MAX_CHANS);
 
-	if (   save_audio_config_p->achan[chan].medium != MEDIUM_RADIO) {
+	if (   save_audio_config_p->chan_medium[chan] != MEDIUM_RADIO) {
 	  text_color_set(DW_COLOR_ERROR);
 	  dw_printf ("Internal error, ptt_set ( %s, %d, %d ), did not expect invalid channel.\n", otnames[ot], chan, ptt);
 	  return;
@@ -1359,7 +1369,7 @@ int get_input (int it, int chan)
 	assert (it >= 0 && it < NUM_ICTYPES);
 	assert (chan >= 0 && chan < MAX_CHANS);
 
-	if (   save_audio_config_p->achan[chan].medium != MEDIUM_RADIO) {
+	if (   save_audio_config_p->chan_medium[chan] != MEDIUM_RADIO) {
 	  text_color_set(DW_COLOR_ERROR);
 	  dw_printf ("Internal error, get_input ( %d, %d ), did not expect invalid channel.\n", it, chan);
 	  return -1;
@@ -1423,7 +1433,7 @@ void ptt_term (void)
 	int n;
 
 	for (n = 0; n < MAX_CHANS; n++) {
-	  if (save_audio_config_p->achan[n].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[n] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      ptt_set (ot, n, 0);
@@ -1432,7 +1442,7 @@ void ptt_term (void)
 	}
 
 	for (n = 0; n < MAX_CHANS; n++) {
-	  if (save_audio_config_p->achan[n].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[n] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      if (ptt_fd[n][ot] != INVALID_HANDLE_VALUE) {
@@ -1450,7 +1460,7 @@ void ptt_term (void)
 #ifdef USE_HAMLIB
 
 	for (n = 0; n < MAX_CHANS; n++) {
-	  if (save_audio_config_p->achan[n].medium == MEDIUM_RADIO) {
+	  if (save_audio_config_p->chan_medium[n] == MEDIUM_RADIO) {
 	    int ot;
 	    for (ot = 0; ot < NUM_OCTYPES; ot++) {
 	      if (rig[n][ot] != NULL) {
@@ -1489,14 +1499,14 @@ int main ()
 
 	my_audio_config.adev[0].num_channels = 2;
 
-	my_audio_config.achan[0].medium = MEDIUM_RADIO;
+	my_audio_config.chan_medium[0] = MEDIUM_RADIO;
 	my_audio_config.achan[0].octrl[OCTYPE_PTT].ptt_method = PTT_METHOD_SERIAL;
 // TODO: device should be command line argument.
 	strlcpy (my_audio_config.achan[0].octrl[OCTYPE_PTT].ptt_device, "COM3", sizeof(my_audio_config.achan[0].octrl[OCTYPE_PTT].ptt_device));
 	//strlcpy (my_audio_config.achan[0].octrl[OCTYPE_PTT].ptt_device, "/dev/ttyUSB0", sizeof(my_audio_config.achan[0].octrl[OCTYPE_PTT].ptt_device));
 	my_audio_config.achan[0].octrl[OCTYPE_PTT].ptt_line = PTT_LINE_RTS;
 
-	my_audio_config.achan[1].medium = MEDIUM_RADIO;
+	my_audio_config.chan_medium[1] = MEDIUM_RADIO;
 	my_audio_config.achan[1].octrl[OCTYPE_PTT].ptt_method = PTT_METHOD_SERIAL;
 	strlcpy (my_audio_config.achan[1].octrl[OCTYPE_PTT].ptt_device, "COM3", sizeof(my_audio_config.achan[1].octrl[OCTYPE_PTT].ptt_device));
 	//strlcpy (my_audio_config.achan[1].octrl[OCTYPE_PTT].ptt_device, "/dev/ttyUSB0", sizeof(my_audio_config.achan[1].octrl[OCTYPE_PTT].ptt_device));
@@ -1570,7 +1580,7 @@ int main ()
 
 	memset (&my_audio_config, 0, sizeof(my_audio_config));
 	my_audio_config.adev[0].num_channels = 1;
-	my_audio_config.achan[0].medium = MEDIUM_RADIO;
+	my_audio_config.chan_medium[0] = MEDIUM_RADIO;
 	my_audio_config.adev[0].octrl[OCTYPE_PTT].ptt_method = PTT_METHOD_GPIO;
 	my_audio_config.adev[0].octrl[OCTYPE_PTT].out_gpio_num = 25;
 
@@ -1601,10 +1611,10 @@ int main ()
 #if 0
 	memset (&my_audio_config, 0, sizeof(my_audio_config));
 	my_audio_config.num_channels = 2;
-	my_audio_config.achan[0].medium = MEDIUM_RADIO;
+	my_audio_config.chan_medium[0] = MEDIUM_RADIO;
 	my_audio_config.adev[0].octrl[OCTYPE_PTT].ptt_method = PTT_METHOD_LPT;
 	my_audio_config.adev[0].octrl[OCTYPE_PTT].ptt_lpt_bit = 0;
-	my_audio_config.achan[1].medium = MEDIUM_RADIO;
+	my_audio_config.chan_medium[1] = MEDIUM_RADIO;
 	my_audio_config.adev[1].octrl[OCTYPE_PTT].ptt_method = PTT_METHOD_LPT;
 	my_audio_config.adev[1].octrl[OCTYPE_PTT].ptt_lpt_bit = 1;
 

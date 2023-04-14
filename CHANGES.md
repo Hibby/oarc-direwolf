@@ -2,13 +2,40 @@
 # Revision History #
 
 
-## Version 1.6  --  October 2020 ##
+## Version 1.7  --  Under Development ('dev' branch) ##
 
+
+### New Features: ###
+
+- Additional documentation location to slow down growth of main repository.  [https://github.com/wb2osz/direwolf-doc](https://github.com/wb2osz/direwolf-doc)
+
+- New ICHANNEL configuration option to map a KISS client application channel to APRS-IS. Packets from APRS-IS will be presented to client applications as the specified channel. Packets sent, by client applications, to that channel will go to APRS-IS rather than a radio channel.  Details in ***Internal-Packet-Routing.pdf***.
+
+- New variable speed option for gen_packets. For example,  "-v 5,0.1" would generate packets from 5% too slow to 5% too fast with increments of 0.1.  Some implementations might have imprecise timing.  Use this to test how well TNCs tolerate sloppy timing.
+
+- Improved Layer 2 Protocol [(IL2P)](https://en.wikipedia.org/wiki/FX.25_Forward_Error_Correction).  Use "-I 1" on command line to enable transmit for first channel.  Compatible with Nino TNC for 1200 and 9600 bps.
+
+- Limited support for CM109/CM119 GPIO PTT on Windows.
+
+- Dire Wolf now advertises itself using DNS Service Discovery.  This allows suitable APRS / Packet Radio applications to find a network KISS TNC without knowing the IP address or TCP port.    Thanks to Hessu for providing this.  Currently available only for Linux and Mac OSX.  [Read all about it here.](https://github.com/hessu/aprs-specs/blob/master/TCP-KISS-DNS-SD.md)
+
+- The transmit calibration tone (-x) command line option now accepts a radio channel number and/or a single letter mode:  a = alternate tones, m = mark tone, s = space tone, p = PTT only no sound.
+
+- The BEACON configuration now recognizes the SOURCE= option.  This replaces the AX.25 source address rather than using the MYCALL value for the channel.  This is useful for sending more than 5 analog telemetry channels.  Use two, or more, source addresses with up to 5 analog channels each.
+
+- For more flexibility, the FX.25 transmit property can now be set individually by channel, rather than having a global setting for all channels.  The -X on the command line applies only to channel 0.  For other channels you need to add a new line to the configuration file.  You can specify a specific number of parity bytes (16, 32, 64) or 1 to choose automatically based on packet size.
+
+    > After:   "CHANNEL 1"   (or other channel)
+    >
+    > Add:     "FX25TX 1" (or 16 or 32 or 64)
+
+
+## Version 1.6  --  October 2020 ##
 
 ### New Build Procedure: ###
 
 
-- Rather than trying to keep a bunch of different platform specific Makefiles in sync, "cmake" is now used for greater portability and easier maintenance.
+- Rather than trying to keep a bunch of different platform specific Makefiles in sync, "cmake" is now used for greater portability and easier maintenance.  This was contributed by Davide Gerhard.
 
 - README.md has a quick summary of the process.  More details in the ***User Guide***.
 
