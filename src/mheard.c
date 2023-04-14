@@ -102,7 +102,7 @@ typedef struct mheard_s {
 
 	double dlat, dlon;			// Last position.  G_UNKNOWN for unknown.
 
-	int msp;				// Allow message sender positon report.
+	int msp;				// Allow message sender position report.
 						// When non zero, an IS>RF position report is allowed.
 						// Then decremented.
 
@@ -350,6 +350,11 @@ void mheard_save_rf (int chan, decode_aprs_t *A, packet_t pp, alevel_t alevel, r
 	  }
 
 	  mptr = calloc(sizeof(mheard_t),1);
+	  if (mptr == NULL) {
+	    text_color_set(DW_COLOR_ERROR);
+	    dw_printf ("FATAL ERROR: Out of memory.\n");
+	    exit (EXIT_FAILURE);
+	  }
 	  strlcpy (mptr->callsign, source, sizeof(mptr->callsign));
 	  mptr->count = 1;
 	  mptr->chan = chan;
@@ -429,6 +434,7 @@ void mheard_save_rf (int chan, decode_aprs_t *A, packet_t pp, alevel_t alevel, r
  *				N1HKO-10>APJI40,TCPIP*,qAC,N1HKO-JS:<IGATE,MSG_CNT=0,LOC_CNT=0
  *				K1RI-2>APWW10,WIDE1-1,WIDE2-1,qAS,K1RI:/221700h/9AmA<Ct3_ sT010/002g005t045r000p023P020h97b10148
  *				KC1BOS-2>T3PQ3S,WIDE1-1,WIDE2-1,qAR,W1TG-1:`c)@qh\>/"50}TinyTrak4 Mobile
+ *				WHO-IS>APJIW4,TCPIP*,qAC,AE5PL-JF::WB2OSZ   :C/Billerica Amateur Radio Society/MA/United States{XF}WO
  *
  *				  Notice how the final address in the header might not
  *				  be a valid AX.25 address.  We see a 9 character address
@@ -438,6 +444,7 @@ void mheard_save_rf (int chan, decode_aprs_t *A, packet_t pp, alevel_t alevel, r
  *				  a clue about the journey taken but I don't think we care here.
  *
  *				  All we should care about here is the the source address.
+ *				  Note that the source address might not adhere to the AX.25 format.
  *
  * Description:
  *
@@ -445,21 +452,25 @@ void mheard_save_rf (int chan, decode_aprs_t *A, packet_t pp, alevel_t alevel, r
 
 void mheard_save_is (char *ptext)
 {
-	packet_t pp;
 	time_t now = time(NULL);
 	char source[AX25_MAX_ADDR_LEN];
-	mheard_t *mptr;
+
+#if 1
+// It is possible that source won't adhere to the AX.25 restrictions.
+// So we simply extract the source address, as text, from the beginning rather than
+// using ax25_from_text() and ax25_get_addr_with_ssid().
+
+	memset (source, 0, sizeof(source));
+	memcpy (source, ptext, sizeof(source)-1);
+	char *g = strchr(source, '>');
+	if (g != NULL) *g = '\0';
+
+#else
 
 /*
- * Try to parse it into a packet object.
- * This will contain "q constructs" and we might see an address
- * with two alphnumeric characters in the SSID so we must use
- * the non-strict parsing.
- *
- * Bug:  Up to 8 digipeaters are allowed in radio format.
- * There is a potential of finding a larger number here.
+ * Keep this here in case I want to revive it to get location.
  */
-	pp = ax25_from_text(ptext, 0);
+	packet_t pp = ax25_from_text(ptext, 0);
 
 	if (pp == NULL) {
 	  if (mheard_debug) {
@@ -470,13 +481,17 @@ void mheard_save_is (char *ptext)
 	  return;
 	}
 
-	ax25_get_addr_with_ssid (pp, AX25_SOURCE, source);
+	//////ax25_get_addr_with_ssid (pp, AX25_SOURCE, source);
+#endif
 
-	mptr = mheard_ptr(source);
+	mheard_t *mptr = mheard_ptr(source);
 	if (mptr == NULL) {
 	  int i;
 /*
  * Not heard before.  Add it.
+ * Observation years later:
+ * Hmmmm.  I wonder why I did not store the location if available.
+ * An earlier example has an APRSdroid station reporting location without using [ham] RF.
  */
 
 	  if (mheard_debug) {
@@ -485,6 +500,11 @@ void mheard_save_is (char *ptext)
 	  }
 
 	  mptr = calloc(sizeof(mheard_t),1);
+	  if (mptr == NULL) {
+	    text_color_set(DW_COLOR_ERROR);
+	    dw_printf ("FATAL ERROR: Out of memory.\n");
+	    exit (EXIT_FAILURE);
+	  }
 	  strlcpy (mptr->callsign, source, sizeof(mptr->callsign));
 	  mptr->count = 1;
 	  mptr->last_heard_is = now;
@@ -527,7 +547,9 @@ void mheard_save_is (char *ptext)
 	  mheard_dump ();
 	}
 
+#if 0
 	ax25_delete (pp);
+#endif
 
 } /* end mheard_save_is */
 
@@ -768,7 +790,7 @@ void mheard_set_msp (char *callsign, int num)
  *
  * Inputs:	callsign	- Callsign for station which sent the "message."
  *
- * Returns:	The cound for the specified station.
+ * Returns:	The count for the specified station.
  *		0 if not found.
  *
  *------------------------------------------------------------------*/

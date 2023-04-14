@@ -62,6 +62,18 @@ Force G3RUH modem regardless of data rate.
 .BI "-J " 
 2400 bps QPSK compatible with MFJ-2400.
 
+.TP
+.BI "-X " "n"
+1 to enable FX.25 transmit.  16, 32, 64 for specific number of check bytes.
+
+.TP
+.BI "-I " "n"
+Enable IL2P transmit.  n=1 is recommended.  0 uses weaker FEC.
+
+.TP
+.BI "-i " "n"
+Enable IL2P transmit, inverted polarity.  n=1 is recommended.  0 uses weaker FEC.
+
 
 .TP
 .BI  "-m " "n"
@@ -88,8 +100,12 @@ Send output to .wav file.
 8 bit audio rather than 16.
 
 .TP
-.B  "-2"
+.BI  "-2"
 2 channels of audio rather than 1.
+
+.TP
+.BI "-v"  "max[,incr]"
+Variable speed with specified maximum error and optional increment.
 
 
 .SH EXAMPLES
