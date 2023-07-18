@@ -37,7 +37,7 @@ Last-Update: 2021-11-03
  
 --- a/man/direwolf.1
 +++ b/man/direwolf.1
-@@ -188,7 +188,7 @@
+@@ -215,7 +215,7 @@
  
  
  .SH SEE ALSO
@@ -48,7 +48,7 @@ Last-Update: 2021-11-03
  
 --- a/man/gen_packets.1
 +++ b/man/gen_packets.1
-@@ -134,7 +134,7 @@
+@@ -150,7 +150,7 @@
  .P
  
  .SH SEE ALSO
@@ -125,8 +125,8 @@ Last-Update: 2021-11-03
  
 --- a/src/direwolf.c
 +++ b/src/direwolf.c
-@@ -1509,13 +1509,7 @@
- 	dw_printf ("received audio.  This can overrides the audio input specified in the configuration file.\n");
+@@ -1721,14 +1721,7 @@
+ 	dw_printf ("received audio.  This can override the audio input specified in the configuration file.\n");
  	dw_printf ("\n");
    
 -#if __WIN32__
@@ -136,6 +136,7 @@ Last-Update: 2021-11-03
 -	dw_printf ("Complete documentation can be found in /usr/local/share/doc/direwolf\n");
 -#endif
 -	dw_printf ("or online at https://github.com/wb2osz/direwolf/tree/master/doc\n");
+-	text_color_set(DW_COLOR_INFO);
 +	dw_printf ("Complete documentation can be found online at https://github.com/wb2osz/direwolf/tree/master/doc\n");
  	exit (EXIT_FAILURE);
  }

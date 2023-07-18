@@ -1,0 +1,316 @@
+--- a/src/ax25_pad.c
++++ b/src/ax25_pad.c
+@@ -1992,6 +1992,8 @@
+ 	ax25_get_addr_with_ssid (this_p, AX25_DESTINATION, stemp);
+ 	strcat (result, stemp);
+ 
++	printf("%s\n", result);
++
+ 	heard = ax25_get_heard(this_p);
+ 
+ 	for (i=(int)AX25_REPEATER_1; i<this_p->num_addr; i++) {
+@@ -2396,8 +2398,6 @@
+ 
+ 	  snprintf (l_text, sizeof(l_text), ", length = %d", flen);
+ 	  strlcat (cp_text, l_text, sizeof(cp_text));
+-
+-	  dw_printf ("%s\n", cp_text);
+ 	}
+ 
+ 	// Address fields must be only upper case letters and digits.
+--- a/src/ax25_pad.h
++++ b/src/ax25_pad.h
+@@ -69,7 +69,7 @@
+ #define AX25_PID_SEGMENTATION_FRAGMENT 0x08
+ #define AX25_PID_ESCAPE_CHARACTER 0xff
+ 
+-
++#define AX25_PAD_C                     // Need to make visible for ACKMODE
+ #ifdef AX25_PAD_C	/* Keep this hidden - implementation could change. */
+ 
+ struct packet_s {
+@@ -142,6 +142,11 @@
+ 				
+ 
+ 	int magic2;		/* Will get stomped on if above overflows. */
++
++        char Client;                    // So we can send ack to right one
++        unsigned char KISSCMD;  // KISS command byte (0 or 12 for ackmode)
++        unsigned short ACK       ;      // ACK value for Ackmode
++	struct kissport_status_s *KPS ; // Needed for ackmode support on multiport
+ };
+ 
+ 
+--- a/src/kiss_frame.c
++++ b/src/kiss_frame.c
+@@ -536,6 +536,7 @@
+ 	int chan;
+ 	int cmd;
+ 	alevel_t alevel;
++	unsigned short ACK = 0;
+ 
+ // New in 1.7:
+ // We can have KISS TCP ports which convey only a single radio channel.
+@@ -554,6 +555,7 @@
+ 	switch (cmd) 
+ 	{
+ 	  case KISS_CMD_DATA_FRAME:				/* 0 = Data Frame */
++	  case XKISS_CMD_DATA:                  // BPQ KISS ACKMODE Frame
+ 
+ 	    // kissnet_copy clobbers first byte but we don't care
+ 	    // because we have already determined channel and command.
+@@ -629,6 +631,16 @@
+ 	      return;
+ 	    }
+ 
++                        // ackmode check
++ 
++                if (cmd == XKISS_CMD_DATA)                      // ackmode
++                {
++                        // ACK data is first two bytes of frame. Extrack and remove from frame_data
++ 
++                        memcpy(&ACK, kiss_msg+1, 2);
++                        kiss_len -= 2;
++                        memmove(kiss_msg+1, kiss_msg+3, kiss_len-1);
++                }
+ 	    memset (&alevel, 0xff, sizeof(alevel));
+ 	    packet_t pp = ax25_from_frame (kiss_msg+1, kiss_len-1, alevel);
+ 	    if (pp == NULL) {
+@@ -643,6 +655,11 @@
+ 	      /* the high priority queue. */
+ 	      /* Otherwise, it is an original for the low priority queue. */
+ 
++                        pp->KISSCMD = cmd;
++                        pp->ACK = ACK;
++                        pp->Client = client;
++			pp->KPS = kps;
++
+ 	      if (ax25_get_num_repeaters(pp) >= 1 &&
+ 	      		ax25_get_h(pp,AX25_REPEATER_1)) {
+ 	        tq_append (chan, TQ_PRIO_0_HI, pp);
+@@ -939,7 +956,7 @@
+ 		"Data frame",	"TXDELAY",	"P",		"SlotTime",
+ 		"TXtail",	"FullDuplex",	"SetHardware",	"Invalid 7",
+ 		"Invalid 8", 	"Invalid 9",	"Invalid 10",	"Invalid 11",
+-		"Invalid 12", 	"Invalid 13",	"Invalid 14",	"Return" };
++		"ACKMode", 	"Invalid 13",	"Invalid 14",	"Return" };
+ #endif
+ 
+ 	text_color_set(DW_COLOR_DEBUG);
+--- a/src/kiss_frame.h
++++ b/src/kiss_frame.h
+@@ -119,6 +119,7 @@
+ 
+ void kiss_debug_print (fromto_t fromto, char *special, unsigned char *pmsg, int msg_len);
+ 
++void kissnet_raw_send(int Client, unsigned char * ACK, int acklen, struct kissport_status_s *kps);
+ 
+ #endif  // KISS_FRAME_H
+ 
+--- a/src/kissnet.c
++++ b/src/kissnet.c
+@@ -785,6 +785,35 @@
+ 	
+ } /* end kissnet_send_rec_packet */
+ 
++void kissnet_raw_send(int Client, unsigned char * ACK, int acklen, struct kissport_status_s *kps)
++{
++        int err;
++        
++        if (kiss_debug) {
++                kiss_debug_print (1, NULL, ACK, acklen);
++        	text_color_set(DW_COLOR_ERROR);
++        	dw_printf ("\nSENDING RAW PACKET TO CLIENT %d ON SOCKET %d CHANNEL %d PORT %d.\n\n",Client,kps->client_sock[Client],kps->chan,kps->tcp_port);
++	}
++#if __WIN32__
++                    err = SOCK_SEND(kps->client_sock[Client], (char*)ACK, acklen, 0);
++	            if (err == SOCKET_ERROR) {
++	              text_color_set(DW_COLOR_ERROR);
++                      dw_printf ("\nError %d sending message to KISS client application.  Closing connection.\n\n", WSAGetLastError());
++	              closesocket (kps->client_sock[Client]);
++	              kps->client_sock[Client] = -1;
++	              WSACleanup();
++	            }
++#else
++                    err = SOCK_SEND (kps->client_sock[Client], (char*)ACK, acklen);
++	            if (err <= 0) {
++                      perror("kissnet_raw_send");
++	              text_color_set(DW_COLOR_ERROR);
++                      dw_printf ("\nError sending message to KISS client application.  Closing connection.\n\n");
++	              close (kps->client_sock[Client]);
++	              kps->client_sock[Client] = -1;
++	            }
++#endif
++}
+ 
+ /*-------------------------------------------------------------------
+  *
+--- a/src/xmit.c
++++ b/src/xmit.c
+@@ -75,8 +75,8 @@
+ #include "morse.h"
+ #include "dtmf.h"
+ #include "xid.h"
+-#include "dlq.h"
+ #include "server.h"
++#include "kiss_frame.h"
+ 
+ 
+ /*
+@@ -116,42 +116,10 @@
+ // TODO: When this was first written, bits/sec was same as baud.
+ // Need to revisit this for PSK modes where they are not the same.
+ 
+-#if 0		// Added during 1.5 beta test
+-
+-static int BITS_TO_MS (int b, int ch) {
+-
+-	int bits_per_symbol;
+-
+-	switch (save_audio_config_p->achan[ch].modem_type) {
+-	  case MODEM_QPSK:	bits_per_symbol = 2; break;
+-	  case MODEM_8PSK:	bits_per_symbol = 3; break;
+-	  case default:		bits_per_symbol = 1; break;
+-	}
+-
+-	return ( (b * 1000) / (xmit_bits_per_sec[(ch)] * bits_per_symbol) );
+-}
+-
+-static int MS_TO_BITS (int ms, int ch) {
+-
+-	int bits_per_symbol;
+-
+-	switch (save_audio_config_p->achan[ch].modem_type) {
+-	  case MODEM_QPSK:	bits_per_symbol = 2; break;
+-	  case MODEM_8PSK:	bits_per_symbol = 3; break;
+-	  case default:		bits_per_symbol = 1; break;
+-	}
+-
+-	return ( (ms * xmit_bits_per_sec[(ch)] * bits_per_symbol) / 1000 );  TODO...
+-}
+-
+-#else		// OK for 1200, 9600 but wrong for PSK
+-
+ #define BITS_TO_MS(b,ch) (((b)*1000)/xmit_bits_per_sec[(ch)])
+ 
+ #define MS_TO_BITS(ms,ch) (((ms)*xmit_bits_per_sec[(ch)])/1000)
+ 
+-#endif
+-
+ #define MAXX(a,b) (((a)>(b)) ? (a) : (b))
+ 
+ 
+@@ -742,6 +710,10 @@
+ 	double time_ptt;	/* Time when PTT is turned on. */
+ 	double time_now;	/* Current time. */
+ 
++        unsigned char ACK[60];          // Should never get more that one outstanding ackmode frame, but to be safe..
++        int acklen = 0;
++        int Client = 0;
++        struct kissport_status_s *kps = malloc(sizeof(struct kissport_status_s));
+ 
+ 	int nb;
+ 
+@@ -760,11 +732,6 @@
+ #endif
+ 	ptt_set (OCTYPE_PTT, chan, 1);
+ 
+-// Inform data link state machine that we are now transmitting.
+-
+-	dlq_seize_confirm (chan);	// C4.2.  "This primitive indicates, to the Data-link State
+-					// machine, that the transmission opportunity has arrived."
+-
+ 	pre_flags = MS_TO_BITS(xmit_txdelay[chan] * 10, chan) / 8;
+ 	num_bits =  layer2_preamble_postamble (chan, pre_flags, 0, save_audio_config_p);
+ #if DEBUG
+@@ -773,11 +740,6 @@
+ 	double presleep = dtime_now();
+ #endif
+ 
+-	SLEEP_MS (10);			// Give data link state machine a chance to
+-					// to stuff more frames into the transmit queue,
+-					// in response to dlq_seize_confirm, so
+-					// we don't run off the end too soon.
+-
+ #if DEBUG
+ 	text_color_set(DW_COLOR_DEBUG);
+ 	// How long did sleep last?
+@@ -801,6 +763,22 @@
+ 	text_color_set(DW_COLOR_DEBUG);
+ 	dw_printf ("xmit_thread: t=%.3f, nb=%d, num_bits=%d, numframe=%d\n", dtime_now()-time_ptt, nb, num_bits, numframe);
+ #endif
++                if (pp->KISSCMD == 12)          // ACKMODE
++                {
++                        // return an ack
++                        ACK[acklen++] = FEND;
++                        ACK[acklen++] = pp->KISSCMD;
++                        memcpy(&ACK[acklen], &pp->ACK, 2);
++                        acklen += 2;
++                        ACK[acklen++] = FEND;
++ 
++#if DEBUG
++	                text_color_set(DW_COLOR_DEBUG);
++	                dw_printf ("\nxmit_thread: t=%.3f ACKMODE CLIENT %d SOCKET %d CHANNEL %d PORT %d.\n\n",dtime_now()-time_ptt,pp->Client,pp->KPS->client_sock[Client],pp->KPS->chan,pp->KPS->tcp_port);
++#endif
++                        Client = pp->Client;
++			memcpy(kps, pp->KPS, sizeof(struct kissport_status_s));
++                }
+ 	ax25_delete (pp);
+ 
+ /*
+@@ -852,6 +830,16 @@
+ 	        text_color_set(DW_COLOR_DEBUG);
+ 	        dw_printf ("xmit_thread: t=%.3f, nb=%d, num_bits=%d, numframe=%d\n", dtime_now()-time_ptt, nb, num_bits, numframe);
+ #endif
++                if (pp->KISSCMD == 12)          // ACKMODE
++                {
++                        // return an ack
++ 
++                        ACK[acklen++] = FEND;
++                        ACK[acklen++] = pp->KISSCMD;
++                        memcpy(&ACK[acklen], &pp->ACK, 2);
++                        acklen += 2;
++                        ACK[acklen++] = FEND;
++                }
+ 	        ax25_delete (pp);
+ 
+ 	        break;
+@@ -935,6 +923,13 @@
+ 		
+ 	ptt_set (OCTYPE_PTT, chan, 0);
+ 
++        // Send any ackmode acks
++ 
++        if (acklen)
++        {
++                kissnet_raw_send(Client, ACK, acklen, kps);
++        }
++
+ } /* end xmit_ax25_frames */
+ 
+ 
+@@ -969,24 +964,6 @@
+ 
+ 
+ 	if (ax25_is_null_frame(pp)) {
+-
+-	  // Issue 132 - We could end up in a situation where:
+-	  // Transmitter is already on.
+-	  // Application wants to send a frame.
+-	  // dl_seize_request turns into this null frame.
+-	  // It was being ignored here so the data got stuck in the queue.
+-	  // I think the solution is to send back a seize confirm here.
+-	  // It shouldn't hurt if we send it redundantly.
+-	  // Added for 1.5 beta test 4.
+-
+-	  dlq_seize_confirm (c);	// C4.2.  "This primitive indicates, to the Data-link State
+-					// machine, that the transmission opportunity has arrived."
+-
+-	  SLEEP_MS (10);		// Give data link state machine a chance to
+-					// to stuff more frames into the transmit queue,
+-					// in response to dlq_seize_confirm, so
+-					// we don't run off the end too soon.
+-
+ 	  return(0);
+ 	}
+ 

@@ -1,5 +1,5 @@
 fix_documentation_path.patch
 no-install-pdf
-python3
 desktop-main-category
 lib-udev-rules
+szymon.patch

@@ -1,3 +1,10 @@
+direwolf (1.7-1) UNRELEASED; urgency=medium
+
+  * Added 1.7 from upstream
+  * refreshed patches
+
+ -- Dave Hibberd <d@vehibberd.com>  Fri, 14 Apr 2023 23:40:31 +0100
+
 direwolf (1.6+dfsg-3) unstable; urgency=medium
 
   * Team upload.
