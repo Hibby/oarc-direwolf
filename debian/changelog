@@ -1,4 +1,4 @@
-direwolf (1.7-1) UNRELEASED; urgency=medium
+direwolf (1.7-dev+dfsg-1) UNRELEASED; urgency=medium
 
   * Added 1.7 from upstream
   * refreshed patches
