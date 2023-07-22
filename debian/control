@@ -4,7 +4,7 @@ Uploaders: Christoph Berg <myon@debian.org>
 Section: hamradio
 Priority: optional
 Build-Depends: cmake,
-               debhelper-compat (= 13),
+               debhelper-compat (= 12),
                libasound2-dev,
                libgps-dev,
                libhamlib-dev,
