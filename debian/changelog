@@ -1,9 +1,9 @@
-direwolf (1.7-dev+dfsg-1) UNRELEASED; urgency=medium
+direwolf (1.7-dev+dfsg-jammy1) jammy; urgency=medium
 
   * Added 1.7 from upstream
   * refreshed patches
 
- -- Dave Hibberd <d@vehibberd.com>  Fri, 14 Apr 2023 23:40:31 +0100
+ -- Dave Hibberd <d@vehibberd.com>  Tue, 29 Aug 2023 22:35:49 +0100
 
 direwolf (1.6+dfsg-3) unstable; urgency=medium
 
