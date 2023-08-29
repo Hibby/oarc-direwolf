@@ -2,4 +2,3 @@ fix_documentation_path.patch
 no-install-pdf
 desktop-main-category
 lib-udev-rules
-szymon.patch
