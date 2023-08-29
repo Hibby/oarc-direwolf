@@ -1,3 +1,9 @@
+direwolf (1.7-dev+dfsg-1~bpo11+1) bullseye; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Dave Hibberd <d@vehibberd.com>  Tue, 29 Aug 2023 22:18:10 +0100
+
 direwolf (1.7-dev+dfsg-1) UNRELEASED; urgency=medium
 
   * Added 1.7 from upstream
